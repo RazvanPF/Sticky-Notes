@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticky Notes App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="sidebar">
+    <button id="noteButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/stickynote.png');"></button>
+    <button id="addNoteButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/plusicon.png');"></button>
+    <button id="removeButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/removeicon2.png');"></button>
+    <button id="toggleBorderButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/gridicon2.png');"></button>
+    <!-- "?" Button for Instructions -->
+    <button id="helpButton" class="button help-button">?</button>
+</div>
+<div id="noteSelector" class="sidebar">
+    <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote.png" class="noteIcon" alt="Yellow Note">
+    <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote2.png" class="noteIcon" alt="White Note">
+    <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote3.png" class="noteIcon" alt="Blue Note">
+    <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote4.png" class="noteIcon" alt="Green Note">
+</div>
+<div id="board"></div>
+
+<!-- Popup for Instructions -->
+<div id="instructionPopup" class="popup hidden">
+    <div class="popup-content">
+        <h2>Welcome to Sticky Notes!</h2>
+        <p>Sticky notes app allows you to add up to 16 sticky notes, add text on them, move them around as you see fit and more!</p>
+        <h3>Instructions:</h3>
+        <ul id="iconedlist">
+            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote.png" alt="Sticky Note" class="icon"> opens a new sidebar for you to choose which type of sticky note you want to use.</li>
+            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/plusicon.png" alt="Plus" class="icon"> automatically adds selected sticky note type in the first grid available location.</li>
+            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/removeicon2.png" alt="Remove" class="icon"> then clicking any existing sticky note removes it. Deactivate remove option by clicking it again</li>
+            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/gridicon2.png" alt="Grid" class="icon"> toggles visibility of the grid squares for visual aid</li>
+        </ul>
+        <ul>
+            <li><strong>Drag and Drop:</strong> Simply left-click and drag a sticky note icon to place it anywhere on the board.</li>
+            <li><strong>Move Note:</strong> To reposition existing sticky note, SHIFT + left-click and dragging it to desired location.</li>
+            <li><strong>Edit Notes:</strong> Click within a sticky note to start typing in the text area provided.</li>
+        </ul>
+        <button id="closePopupButton" class="close-popup-button">I got it</button>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

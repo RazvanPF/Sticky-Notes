@@ -1,0 +1,209 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+#sidebar, #noteSelector {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 70px; /* Fixed width for sidebars */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+#noteSelector {
+    left: 80px; /* Positioning second sidebar to the right of the first */
+    display: none; /* Initially hidden */
+    border-left: solid 1px black;
+}
+
+.button {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+    background-size: cover;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background-color: #f0f0f0;
+}
+
+.button.active {
+    border: 2px solid #555; /* Indicates active state */
+}
+
+.noteIcon {
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+#board {
+    position: absolute;
+    left: 230px; /* Adjusted to start right after the sidebar */
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Each column is 387px wide */
+    grid-auto-rows: 392px; /* Each row is 392px tall */
+    gap: 10px;
+    padding: 10px;
+    overflow-y: auto; /* Enables vertical scrolling */
+    align-content: start; /* Aligns grid content to the top */
+}
+
+.sticky {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 348px; /* 90% of the grid column width */
+    height: 353px; /* 90% of the grid row height */
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    /* box-shadow: 0 4px 6px rgba(0,0,0,0.3); */
+}
+
+textarea {
+    width: 65%;
+    height: 65%;
+    border: none;
+    background: transparent; 
+    resize: none;
+    padding: 5px;
+    outline: none;
+    
+}
+
+.button#removeButton {
+    background-size: 30px 30px; /* Set icon size */
+    background-repeat: no-repeat; /* Prevent icon repeat */
+    background-position: center; /* Center the icon */
+    border-color: red;
+}
+
+.button#toggleBorderButton {
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    background-position: center; 
+}
+
+.button#addNoteButton {
+    width: 35px;
+    height: 35px;
+    border: solid 1px black;
+    border-radius: 5px;
+    background-repeat: no-repeat;
+    background-position: center; 
+    margin-top: 10px;
+}
+
+.grid-cell {
+    position: relative;
+    width: 387px;
+    height: 392px;
+    border: 1px dashed #d6d6d6;
+}
+
+.grid-cell.highlight {
+    background-color: rgba(173, 216, 230, 0.5); /* Light blue background for highlighting */
+}
+
+/* Styles the scrollbar track (part the thumb slides within) */
+textarea::-webkit-scrollbar-track {
+    background-color: #f0f0f0; /* Light grey track */
+}
+
+/* Styles the scrollbar thumb (the part that's draggable) */
+textarea::-webkit-scrollbar-thumb {
+    background-color: #888; /* Darker grey thumb */
+    border-radius: 10px; /* Optionally round the corners */
+}
+
+/* Styles the scrollbar itself (width and background) */
+textarea::-webkit-scrollbar {
+    width: 8px; /* Thin scrollbar width */
+    background-color: #f0f0f0; /* Light grey scrollbar background */
+    border-radius: 10px;
+}
+
+/* Additional styling for the scrollbar corner (optional) */
+textarea::-webkit-scrollbar-corner {
+    background-color: #f0f0f0; /* Background color of the corner */
+    border-radius: 10px;
+}
+
+.help-button {
+    width: 30px;
+    height: 30px;
+    border-radius: 30px; /* Make it circular */
+    background-color: #e0e0e0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto; /* Push it to the bottom of the sidebar */
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.popup.hidden {
+    display: none; /* Hide the popup by default */
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    max-width: 765px; /* Max width for the popup content */
+    width: 100%;
+    max-height: 500px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    text-align: left;
+}
+
+.close-popup-button {
+    display: block;
+    margin: 20px auto 0; /* Center the button horizontally */
+    padding: 10px 20px;
+    background-color: transparent;
+    border: 1px solid blue;
+    border-radius: 5px;
+    color: blue;
+    cursor: pointer;
+}
+
+.icon {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+#iconedlist{
+    list-style-type: none;
+}
