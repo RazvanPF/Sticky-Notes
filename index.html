@@ -21,6 +21,13 @@
     <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote3.png" class="noteIcon" alt="Blue Note">
     <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote4.png" class="noteIcon" alt="Green Note">
 </div>
+<div id="filterBar" style="padding: 10px; margin-left: 230px; /* Adjust as per sidebar width */">
+    <input type="text" id="keywordInput" placeholder="Search Keywords" style="margin-right: 10px;">
+    <input type="date" id="dateInput" style="margin-right: 10px;">
+    <input type="text" id="tagInput" placeholder="Tags, separated by commas">
+    <button onclick="filterStickyNotes()">Filter</button>
+    <button onclick="resetFilters()">Reset</button>
+</div>
 <div id="board"></div>
 
 <!-- Popup for Instructions -->

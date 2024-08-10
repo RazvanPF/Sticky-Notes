@@ -48,7 +48,7 @@ body, html {
 #board {
     position: absolute;
     left: 230px; /* Adjusted to start right after the sidebar */
-    top: 0;
+    top: 60px; /* Height of the filter bar plus some padding */
     right: 0;
     bottom: 0;
     display: grid;
@@ -78,6 +78,7 @@ textarea {
     width: 65%;
     height: 65%;
     border: none;
+    padding-top: 20px;
     background: transparent; 
     resize: none;
     padding: 5px;
@@ -206,4 +207,100 @@ textarea::-webkit-scrollbar-corner {
 
 #iconedlist{
     list-style-type: none;
+}
+
+.sticky .gear-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/gearicon.png');
+    background-size: cover;
+    z-index: 10;
+}
+
+.settings-popup {
+    position: absolute;
+    width: 250px;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 10;
+    top: 40px;
+    right: 10px;
+}
+
+.settings-popup label {
+    display: block;
+    margin: 10px 0;
+}
+
+.settings-popup input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.settings-popup input[type="date"],
+.settings-popup input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    display: block;
+}
+
+.save-button {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.settings-popup.active {
+    display: block;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    background: none;
+    border: none;
+}
+
+#filterBar {
+    position: absolute;
+    left: 10px; /* Align with the left edge of the board */
+    max-width: 1615px ;
+    top: 5px;
+    right: 0;
+    padding: 10px;
+    background-color: #f0f0f0;
+    z-index: 100; /* Ensures it stays on top */
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+}
+
+#filterBar input[type="text"], #filterBar input[type="date"] {
+    padding: 8px;
+    margin-right: 10px;
+    width: 200px; /* Adjust based on preference */
+}
+
+#filterBar button {
+    padding: 8px 16px;
+    margin: 4px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
