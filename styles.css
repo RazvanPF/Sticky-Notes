@@ -482,3 +482,25 @@ input[type="date"] {
 .text-toolbar.hidden {
     display: none;
 }
+
+.editable-text {
+    white-space: pre-wrap; /* Maintain whitespace for formatting */
+    overflow-wrap: break-word; /* Ensure text breaks naturally */
+    line-height: 1.2; /* Default line height */
+}
+
+.editable-textarea {
+    width: 80%;
+    height: 80%;
+    border: none;
+    resize: none;
+    padding: 5px;
+    background: transparent;
+    outline: none;
+    overflow: auto;
+    white-space: pre-wrap; /* Maintain whitespace and newlines */
+}
+
+.editable-textarea::selection {
+    background: rgba(0, 123, 255, 0.3); /* Highlight color for selected text */
+}
