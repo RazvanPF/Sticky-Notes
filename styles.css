@@ -83,7 +83,12 @@ textarea {
     resize: none;
     padding: 5px;
     outline: none;
-    
+}
+
+.button#noteButton {
+    background-size: 50px 50px; /* Set icon size */
+    background-repeat: no-repeat; /* Prevent icon repeat */
+    background-position: center; /* Center the icon */
 }
 
 .button#removeButton {
@@ -91,6 +96,18 @@ textarea {
     background-repeat: no-repeat; /* Prevent icon repeat */
     background-position: center; /* Center the icon */
     border-color: red;
+}
+
+.button#saveButton {
+    background-size: 40px 40px; /* Set icon size */
+    background-repeat: no-repeat; /* Prevent icon repeat */
+    background-position: center; /* Center the icon */
+}
+
+.button#clearStorageButton {
+    background-size: 45px 45px; /* Set icon size */
+    background-repeat: no-repeat; /* Prevent icon repeat */
+    background-position: center; /* Center the icon */
 }
 
 .button#toggleBorderButton {
@@ -185,6 +202,20 @@ textarea::-webkit-scrollbar-corner {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     text-align: left;
+}
+
+.popup-content h2{
+    text-align:center;
+}
+
+.popup-content h3{
+    text-align:center;
+}
+
+.popup-content p{
+    text-align:center;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 .close-popup-button {
@@ -303,4 +334,67 @@ textarea::-webkit-scrollbar-corner {
     color: white;
     border: none;
     cursor: pointer;
+}
+
+/* Notification styling */
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    z-index: 1000;
+}
+
+/* Style for confirmation popup buttons */
+.confirm-button {
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin: 5px;
+    width: 100px; /* Set a fixed width for uniform size */
+    padding: 10px 0; /* Equal vertical padding for consistent height */
+    text-align: center; /* Center-align the text */
+}
+
+.confirm-button:hover {
+    transform: scale(1.05);
+}
+
+.yes-button {
+    border: 1px solid red;
+    color: red;
+    background-color: transparent;
+}
+
+.cancel-button {
+    border: 1px solid blue;
+    color: blue;
+    background-color: transparent;
+}
+
+.confirmpopup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    padding: 20px;
+    max-width: 500px; /* Max width for the popup content */
+    width: 100%;
+    max-height: 500px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    text-align: left;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center; /* Center-align the buttons horizontally */
+    gap: 10px; /* Add space between the buttons */
+    margin-top: 10px; /* Add some margin above the button container */
 }

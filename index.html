@@ -12,8 +12,11 @@
     <button id="addNoteButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/plusicon.png');"></button>
     <button id="removeButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/removeicon2.png');"></button>
     <button id="toggleBorderButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/gridicon2.png');"></button>
+    <button id="saveButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/saveicon.png');"></button>
+    <button id="clearStorageButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/clearicn.png');"></button>
     <!-- "?" Button for Instructions -->
     <button id="helpButton" class="button help-button">?</button>
+    
 </div>
 <div id="noteSelector" class="sidebar">
     <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote.png" class="noteIcon" alt="Yellow Note">
@@ -39,15 +42,29 @@
         <ul id="iconedlist">
             <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote.png" alt="Sticky Note" class="icon"> opens a new sidebar for you to choose which type of sticky note you want to use.</li>
             <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/plusicon.png" alt="Plus" class="icon"> automatically adds selected sticky note type in the first grid available location.</li>
-            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/removeicon2.png" alt="Remove" class="icon"> then clicking any existing sticky note removes it. Deactivate remove option by clicking it again</li>
-            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/gridicon2.png" alt="Grid" class="icon"> toggles visibility of the grid squares for visual aid</li>
+            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/removeicon2.png" alt="Remove" class="icon"> then clicking any existing sticky note removes it. Deactivate remove option by clicking it again.</li>
+            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/gridicon2.png" alt="Grid" class="icon"> toggles visibility of the grid squares for visual aid.</li>
+            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/saveicon.png" alt="Grid" class="icon"> saves current state so you can find everything as you left it upon return.</li>
+            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/clearicn.png" alt="Grid" class="icon"> clears the board and all save data so you can start from scratch.</li>
         </ul>
         <ul>
-            <li><strong>Drag and Drop:</strong> Simply left-click and drag a sticky note icon to place it anywhere on the board.</li>
+            <li><strong>Drag and Drop:</strong> Left-click and drag a sticky note icon from selector sidebar to place it anywhere.</li>
             <li><strong>Move Note:</strong> To reposition existing sticky note, SHIFT + left-click and dragging it to desired location.</li>
             <li><strong>Edit Notes:</strong> Click within a sticky note to start typing in the text area provided.</li>
         </ul>
         <button id="closePopupButton" class="close-popup-button">I got it</button>
+    </div>
+</div>
+
+<!-- Clear Storage Confirmation Popup -->
+<div id="clearConfirmation" class="popup hidden">
+    <div class="confirmpopup-content">
+        <h2>Clear Save Files</h2>
+        <p>Do you really want to clear the board and all saved data?</p>
+        <div class="button-container">
+            <button id="confirmClearYes" class="confirm-button yes-button">Yes</button>
+            <button id="confirmClearNo" class="confirm-button cancel-button">Cancel</button>
+        </div>
     </div>
 </div>
 

@@ -2,6 +2,7 @@ let currentNoteImage = 'https://raw.githubusercontent.com/razvanpf/Images/main/s
 let draggedItem = null; // Keeps track of the sticky note being dragged
 let originalParent = null; // Keeps track of the original parent cell
 let ghostIcon = null; // Ghost icon for dragging
+let bordersVisible = true; // Tracks visibility of grid borders
 
 document.getElementById('noteButton').addEventListener('click', function () {
     document.getElementById('noteSelector').style.display = 'flex';
@@ -124,6 +125,7 @@ function createSticky(imageUrl, cell) {
     dateInput.className = 'date-input';
     dateToggle.onchange = function() {
         dateInput.disabled = !this.checked;
+        if (!this.checked) dateInput.value = ''; // Clear the input if unchecked
     };
     dateLabel.appendChild(dateToggle);
     settingsPopup.appendChild(dateLabel);
@@ -142,6 +144,7 @@ function createSticky(imageUrl, cell) {
     tagInput.className = 'tag-input';
     tagToggle.onchange = function() {
         tagInput.disabled = !this.checked;
+        if (!this.checked) tagInput.value = ''; // Clear the input if unchecked
     };
     tagLabel.appendChild(tagToggle);
     settingsPopup.appendChild(tagLabel);
@@ -161,6 +164,15 @@ function createSticky(imageUrl, cell) {
     // Toggle settings popup display
     gearIcon.addEventListener('click', function() {
         settingsPopup.style.display = settingsPopup.style.display === 'block' ? 'none' : 'block';
+        // Populate settings when the popup is displayed
+        if (settingsPopup.style.display === 'block') {
+            dateToggle.checked = !!sticky.dataset.date;
+            dateInput.disabled = !dateToggle.checked;
+            dateInput.value = sticky.dataset.date || '';
+            tagToggle.checked = !!sticky.dataset.tags;
+            tagInput.disabled = !tagToggle.checked;
+            tagInput.value = sticky.dataset.tags || '';
+        }
     });
 
     // Event listeners for sticky note interactions
@@ -179,7 +191,87 @@ function createSticky(imageUrl, cell) {
     gearIcon.addEventListener('click', function() {
         settingsPopup.style.display = 'block';
     });
+
+    return sticky;
 }
+
+// Function to save the state of the application to localStorage
+function saveToLocalStorage() {
+    let notesData = Array.from(document.querySelectorAll('.sticky')).map(sticky => {
+        return {
+            imageUrl: sticky.style.backgroundImage.slice(5, -2), // Remove 'url("' and '")'
+            text: sticky.querySelector('textarea').value,
+            date: sticky.dataset.date,
+            tags: sticky.dataset.tags,
+            position: {
+                cellIndex: Array.from(sticky.parentElement.parentElement.children).indexOf(sticky.parentElement),
+            }
+        };
+    });
+
+    let appState = {
+        notes: notesData,
+        selectedImage: currentNoteImage,
+        gridVisibility: bordersVisible,
+    };
+
+    localStorage.setItem('stickyNotesApp', JSON.stringify(appState));
+    showNotification('Content saved');
+}
+
+// Function to load the state of the application from localStorage
+function loadFromLocalStorage() {
+    let savedState = JSON.parse(localStorage.getItem('stickyNotesApp'));
+    if (savedState) {
+        if (savedState.notes) {
+            savedState.notes.forEach(note => {
+                let board = document.getElementById('board');
+                let cell = board.querySelector(`.grid-cell:nth-child(${note.position.cellIndex + 1})`);
+                if (cell) {
+                    let sticky = createSticky(note.imageUrl, cell);
+                    sticky.querySelector('textarea').value = note.text;
+                    sticky.dataset.date = note.date || '';
+                    sticky.dataset.tags = note.tags || '';
+                }
+            });
+        }
+
+        if (savedState.selectedImage) {
+            currentNoteImage = savedState.selectedImage;
+            document.getElementById('noteButton').style.backgroundImage = `url(${currentNoteImage})`;
+        }
+
+        if (typeof savedState.gridVisibility !== 'undefined') {
+            document.querySelectorAll('.grid-cell').forEach(cell => {
+                cell.style.border = savedState.gridVisibility ? '1px dashed #d6d6d6' : 'none';
+            });
+            bordersVisible = savedState.gridVisibility;
+        }
+    }
+}
+
+function showClearConfirmation() {
+    document.getElementById('clearConfirmation').classList.remove('hidden');
+}
+
+function hideClearConfirmation() {
+    document.getElementById('clearConfirmation').classList.add('hidden');
+}
+
+function clearLocalStorage() {
+    localStorage.removeItem('stickyNotesApp');
+    document.querySelectorAll('.sticky').forEach(sticky => sticky.remove());
+    showNotification('Local storage cleared');
+    hideClearConfirmation();
+}
+
+// Add event listener for clearing the local storage
+document.getElementById('clearStorageButton').addEventListener('click', showClearConfirmation);
+document.getElementById('confirmClearYes').addEventListener('click', clearLocalStorage);
+document.getElementById('confirmClearNo').addEventListener('click', hideClearConfirmation);
+
+// Load saved data when the document is ready
+document.addEventListener('DOMContentLoaded', loadFromLocalStorage);
 
 document.addEventListener('mousemove', function(event) {
     if (ghostIcon) {
@@ -256,11 +348,10 @@ document.getElementById('board').addEventListener('click', function(event) {
 });
 
 document.getElementById('toggleBorderButton').addEventListener('click', function() {
-    let bordersVisible = !this.bordersVisible;
+    bordersVisible = !bordersVisible; // Toggle the state
     document.querySelectorAll('.grid-cell').forEach(cell => {
         cell.style.border = bordersVisible ? '1px dashed #d6d6d6' : 'none';
     });
-    this.bordersVisible = bordersVisible;
 });
 
 document.getElementById('helpButton').addEventListener('click', function() {
@@ -270,6 +361,8 @@ document.getElementById('helpButton').addEventListener('click', function() {
 document.getElementById('closePopupButton').addEventListener('click', function() {
     document.getElementById('instructionPopup').classList.add('hidden');
 });
+
+document.getElementById('saveButton').addEventListener('click', saveToLocalStorage);
 
 function adjustTextareaSize(imageUrl, textarea) {
     switch (imageUrl) {
@@ -307,16 +400,6 @@ function removeHighlight(cell) {
         cell.classList.remove('highlight');
     }
 }
-
-// Toggle Grid Borders
-let bordersVisible = true;
-
-document.getElementById('toggleBorderButton').addEventListener('click', function() {
-    bordersVisible = !bordersVisible; // Toggle the state
-    document.querySelectorAll('.grid-cell').forEach(cell => {
-        cell.style.border = bordersVisible ? '1px dashed #d6d6d6' : 'none';
-    });
-});
 
 // Show Instructions Popup
 document.getElementById('helpButton').addEventListener('click', function() {
@@ -371,4 +454,23 @@ function resetStickyPosition(sticky) {
     // Remove any inline styles that might have been added for positioning during filtering
     sticky.style.top = '';
     sticky.style.left = '';
+}
+
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.position = 'fixed';
+    notification.style.top = '10px';
+    notification.style.left = '50%';
+    notification.style.transform = 'translateX(-50%)';
+    notification.style.backgroundColor = 'green';
+    notification.style.color = 'white';
+    notification.style.padding = '10px';
+    notification.style.borderRadius = '5px';
+    notification.style.zIndex = '1000';
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        document.body.removeChild(notification);
+    }, 2000);
 }
