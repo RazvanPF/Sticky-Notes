@@ -116,6 +116,13 @@ textarea {
     background-position: center; /* Center the icon */
 }
 
+.button#shareButton {
+    background-size: 40px 40px; /* Set icon size */
+    background-repeat: no-repeat; /* Prevent icon repeat */
+    background-position: center; /* Center the icon */
+}
+
+
 .button#removeButton {
     background-size: 30px 30px; /* Set icon size */
     background-repeat: no-repeat; /* Prevent icon repeat */
@@ -503,4 +510,8 @@ input[type="date"] {
 
 .editable-textarea::selection {
     background: rgba(0, 123, 255, 0.3); /* Highlight color for selected text */
+}
+
+.editable-text a {
+    cursor: pointer; /* Change the cursor to a pointer when hovering over links */
 }

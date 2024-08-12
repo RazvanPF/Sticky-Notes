@@ -273,6 +273,14 @@ function createSticky(imageUrl, cell) {
         }
     });
 
+        // Add event listener for links to open in a new tab
+        textOverlay.addEventListener('click', function(event) {
+            if (event.target.tagName === 'A') {
+                event.preventDefault();
+                window.open(event.target.href, '_blank');
+            }
+        });
+
     return sticky;
 }
 
@@ -721,8 +729,8 @@ function generateShareableUrl() {
         gridVisibility: bordersVisible,
     };
 
-    // Stringify and encode the state
-    let encodedState = encodeURIComponent(btoa(JSON.stringify(appState)));
+    // Stringify and encode the state using btoa for base64 encoding
+    let encodedState = btoa(JSON.stringify(appState));
 
     // Create the shareable URL
     let shareableUrl = `${window.location.origin}${window.location.pathname}?state=${encodedState}`;
@@ -741,7 +749,7 @@ function loadStateFromUrl() {
     const encodedState = urlParams.get('state');
     if (encodedState) {
         try {
-            const savedState = JSON.parse(atob(decodeURIComponent(encodedState)));
+            const savedState = JSON.parse(atob(encodedState));
             if (savedState) {
                 if (savedState.notes) {
                     savedState.notes.forEach(note => {
@@ -818,3 +826,15 @@ document.addEventListener('DOMContentLoaded', function() {
     loadStateFromUrl();
     loadFromLocalStorage(); // Load from localStorage in case there is no URL state
 });
+
+
+// Function to apply a hyperlink to selected text
+function applyLink() {
+    const url = prompt("Enter the URL for the hyperlink:");
+    if (url) {
+        document.execCommand('createLink', false, url);
+    }
+}
+
+// Add event listener for the hyperlink button
+document.getElementById('linkButton').addEventListener('click', applyLink);
