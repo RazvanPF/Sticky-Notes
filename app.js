@@ -98,8 +98,47 @@ function createSticky(imageUrl, cell) {
 
     let textarea = document.createElement('textarea');
     textarea.setAttribute('spellcheck', 'false');
-    adjustTextareaSize(imageUrl, textarea);
     sticky.appendChild(textarea);
+
+    // Create a contentEditable div overlay
+    let textOverlay = document.createElement('div');
+    textOverlay.contentEditable = 'true';
+    textOverlay.className = 'editable-text';
+    textOverlay.style.position = 'absolute';
+    textOverlay.style.width = '100%';
+    textOverlay.style.height = '100%';
+    textarea.style.top = '50%';
+    textarea.style.left = '50%';
+    textarea.style.transform = 'translate(-50%, -50%)'; // Center the textarea
+    textOverlay.style.zIndex = '1';
+    textOverlay.style.display = 'flex';
+    textOverlay.style.padding = '5px';
+    textOverlay.style.overflow = 'auto';
+    textOverlay.style.background = 'transparent'; // Ensure it blends with textarea
+    sticky.appendChild(textOverlay);
+
+    adjustTextareaSize(imageUrl, textOverlay);
+
+    // Sync textarea and contentEditable div
+    textOverlay.addEventListener('input', function () {
+        textarea.value = textOverlay.innerHTML; // Sync div changes to textarea
+    });
+
+    textarea.addEventListener('input', function () {
+        textOverlay.innerHTML = textarea.value; // Sync textarea changes to div
+    });
+
+    // Hide the textarea but keep it for data
+    textarea.style.display = 'none'; 
+
+    cell.appendChild(sticky);
+
+    // Create a div to show the date range
+    let dateDisplay = document.createElement('div');
+    dateDisplay.className = 'date-display';
+    dateDisplay.style.display = 'none'; // Initially hidden
+    sticky.appendChild(dateDisplay);
+
     cell.appendChild(sticky);
 
     // Create gear icon and settings popup
@@ -113,23 +152,40 @@ function createSticky(imageUrl, cell) {
     settingsPopup.style.display = 'none'; // Initially hidden
     sticky.appendChild(settingsPopup);
 
-    // Date toggle and input
+    // Date toggle and inputs
     let dateLabel = document.createElement('label');
-    dateLabel.textContent = 'Date';
+    dateLabel.textContent = 'Date Range';
     let dateToggle = document.createElement('input');
     dateToggle.type = 'checkbox';
     dateToggle.className = 'toggle';
+
     let dateInput = document.createElement('input');
     dateInput.type = 'date';
     dateInput.disabled = true;
     dateInput.className = 'date-input';
+
+    let toDateInput = document.createElement('input');
+    toDateInput.type = 'date';
+    toDateInput.disabled = true;
+    toDateInput.className = 'date-input';
+
+    let toDateWarning = document.createElement('div');
+    toDateWarning.className = 'warning';
+    toDateWarning.style.color = 'red';
+    toDateWarning.style.display = 'none';
+    toDateWarning.textContent = 'To date is required if Date is enabled!';
+
     dateToggle.onchange = function() {
         dateInput.disabled = !this.checked;
-        if (!this.checked) dateInput.value = ''; // Clear the input if unchecked
+        toDateInput.disabled = !this.checked;
+        toDateWarning.style.display = 'none'; // Hide warning when checkbox changes
     };
+
     dateLabel.appendChild(dateToggle);
     settingsPopup.appendChild(dateLabel);
     settingsPopup.appendChild(dateInput);
+    settingsPopup.appendChild(toDateInput);
+    settingsPopup.appendChild(toDateWarning);
 
     // Tag toggle and input
     let tagLabel = document.createElement('label');
@@ -144,35 +200,53 @@ function createSticky(imageUrl, cell) {
     tagInput.className = 'tag-input';
     tagToggle.onchange = function() {
         tagInput.disabled = !this.checked;
-        if (!this.checked) tagInput.value = ''; // Clear the input if unchecked
     };
     tagLabel.appendChild(tagToggle);
     settingsPopup.appendChild(tagLabel);
     settingsPopup.appendChild(tagInput);
 
-    // Save button
+    // Save button for settings
     let saveButton = document.createElement('button');
     saveButton.textContent = 'Save';
     saveButton.className = 'save-button';
     saveButton.onclick = function() {
-        sticky.dataset.date = dateToggle.checked ? dateInput.value : '';
+        if (dateToggle.checked) {
+            if (!dateInput.value || !toDateInput.value) {
+                toDateWarning.style.display = 'block';
+                toDateWarning.textContent = 'Both From and To dates must be set!';
+                return;
+            }
+            if (new Date(dateInput.value) > new Date(toDateInput.value)) {
+                toDateWarning.style.display = 'block';
+                toDateWarning.textContent = 'To date must be after From date!';
+                return;
+            }
+        }
+        
+        toDateWarning.style.display = 'none'; // Hide any warnings after passing validation
+        
+        sticky.dataset.dateFrom = dateToggle.checked ? dateInput.value : '';
+        sticky.dataset.dateTo = dateToggle.checked ? toDateInput.value : '';
         sticky.dataset.tags = tagToggle.checked ? tagInput.value : '';
+        dateDisplay.textContent = dateToggle.checked ? `${dateInput.value} - ${toDateInput.value}` : '';
+        dateDisplay.style.display = dateToggle.checked ? 'block' : 'none';
         settingsPopup.style.display = 'none';
     };
     settingsPopup.appendChild(saveButton);
 
     // Toggle settings popup display
     gearIcon.addEventListener('click', function() {
-        settingsPopup.style.display = settingsPopup.style.display === 'block' ? 'none' : 'block';
-        // Populate settings when the popup is displayed
-        if (settingsPopup.style.display === 'block') {
-            dateToggle.checked = !!sticky.dataset.date;
-            dateInput.disabled = !dateToggle.checked;
-            dateInput.value = sticky.dataset.date || '';
-            tagToggle.checked = !!sticky.dataset.tags;
-            tagInput.disabled = !tagToggle.checked;
-            tagInput.value = sticky.dataset.tags || '';
+        if (sticky.dataset.dateFrom && sticky.dataset.dateTo) {
+            dateDisplay.textContent = `${sticky.dataset.dateFrom} - ${sticky.dataset.dateTo}`;
+            dateDisplay.style.display = 'block';
+        } else {
+            dateDisplay.style.display = 'none';
         }
+
+        // Populate the settings popup with current data when opened
+        if (sticky.dataset.dateFrom) dateInput.value = sticky.dataset.dateFrom;
+        if (sticky.dataset.dateTo) toDateInput.value = sticky.dataset.dateTo;
+        if (sticky.dataset.tags) tagInput.value = sticky.dataset.tags;
     });
 
     // Event listeners for sticky note interactions
@@ -190,18 +264,44 @@ function createSticky(imageUrl, cell) {
 
     gearIcon.addEventListener('click', function() {
         settingsPopup.style.display = 'block';
+        
+        // Populate the settings popup with current data when opened
+        if (sticky.dataset.dateFrom) dateInput.value = sticky.dataset.dateFrom;
+        if (sticky.dataset.dateTo) toDateInput.value = sticky.dataset.dateTo;
+        if (sticky.dataset.tags) tagInput.value = sticky.dataset.tags;
+    
+        dateToggle.checked = !!(sticky.dataset.dateFrom && sticky.dataset.dateTo);
+    
+        dateInput.disabled = !dateToggle.checked;
+        toDateInput.disabled = !dateToggle.checked;
+        if (dateToggle.checked) {
+            dateDisplay.textContent = `${sticky.dataset.dateFrom} - ${sticky.dataset.dateTo}`;
+            dateDisplay.style.display = 'block';
+        } else {
+            dateDisplay.style.display = 'none';
+        }
     });
 
     return sticky;
 }
 
+
 // Function to save the state of the application to localStorage
 function saveToLocalStorage() {
     let notesData = Array.from(document.querySelectorAll('.sticky')).map(sticky => {
+        const textOverlay = sticky.querySelector('.editable-text');
         return {
-            imageUrl: sticky.style.backgroundImage.slice(5, -2), // Remove 'url("' and '")'
-            text: sticky.querySelector('textarea').value,
-            date: sticky.dataset.date,
+            imageUrl: sticky.style.backgroundImage.slice(5, -2),
+            text: textOverlay.innerHTML, // Save the HTML content
+            style: { // Save styles
+                fontFamily: textOverlay.style.fontFamily,
+                fontSize: textOverlay.style.fontSize,
+                fontWeight: textOverlay.style.fontWeight,
+                fontStyle: textOverlay.style.fontStyle,
+                textDecoration: textOverlay.style.textDecoration
+            },
+            dateFrom: sticky.dataset.dateFrom,
+            dateTo: sticky.dataset.dateTo,
             tags: sticky.dataset.tags,
             position: {
                 cellIndex: Array.from(sticky.parentElement.parentElement.children).indexOf(sticky.parentElement),
@@ -229,9 +329,33 @@ function loadFromLocalStorage() {
                 let cell = board.querySelector(`.grid-cell:nth-child(${note.position.cellIndex + 1})`);
                 if (cell) {
                     let sticky = createSticky(note.imageUrl, cell);
-                    sticky.querySelector('textarea').value = note.text;
-                    sticky.dataset.date = note.date || '';
+                    const textOverlay = sticky.querySelector('.editable-text');
+                    textOverlay.innerHTML = note.text; // Restore the HTML content
+                    // Apply saved styles
+                    textOverlay.style.fontFamily = note.style.fontFamily;
+                    textOverlay.style.fontSize = note.style.fontSize;
+                    textOverlay.style.fontWeight = note.style.fontWeight;
+                    textOverlay.style.fontStyle = note.style.fontStyle;
+                    textOverlay.style.textDecoration = note.style.textDecoration;
+
+                    sticky.dataset.dateFrom = note.dateFrom || '';
+                    sticky.dataset.dateTo = note.dateTo || '';
                     sticky.dataset.tags = note.tags || '';
+
+                    // Handle checkbox and date inputs
+                    const settingsPopup = sticky.querySelector('.settings-popup');
+                    const dateCheckbox = settingsPopup.querySelector('.toggle');
+                    const fromDateInput = settingsPopup.querySelector('.date-input:first-of-type');
+                    const toDateInput = settingsPopup.querySelector('.date-input:last-of-type');
+                    
+                    dateCheckbox.checked = !!(note.dateFrom && note.dateTo);
+                    fromDateInput.disabled = !dateCheckbox.checked;
+                    toDateInput.disabled = !dateCheckbox.checked;
+                    fromDateInput.value = note.dateFrom || '';
+                    toDateInput.value = note.dateTo || '';
+
+                    // Update the date display immediately after loading
+                    updateDateDisplay(sticky, note.dateFrom, note.dateTo, dateCheckbox.checked);
                 }
             });
         }
@@ -241,12 +365,21 @@ function loadFromLocalStorage() {
             document.getElementById('noteButton').style.backgroundImage = `url(${currentNoteImage})`;
         }
 
-        if (typeof savedState.gridVisibility !== 'undefined') {
-            document.querySelectorAll('.grid-cell').forEach(cell => {
-                cell.style.border = savedState.gridVisibility ? '1px dashed #d6d6d6' : 'none';
-            });
-            bordersVisible = savedState.gridVisibility;
-        }
+        bordersVisible = savedState.gridVisibility;
+        document.querySelectorAll('.grid-cell').forEach(cell => {
+            cell.style.border = bordersVisible ? '1px dashed #d6d6d6' : 'none';
+        });
+    }
+}
+
+// Helper function to manage date display based on saved data
+function updateDateDisplay(sticky, dateFrom, dateTo, isChecked) {
+    let dateDisplay = sticky.querySelector('.date-display');
+    if (isChecked && dateFrom && dateTo) {
+        dateDisplay.textContent = `${dateFrom} - ${dateTo}`;
+        dateDisplay.style.display = 'block';
+    } else {
+        dateDisplay.style.display = 'none';
     }
 }
 
@@ -261,7 +394,7 @@ function hideClearConfirmation() {
 function clearLocalStorage() {
     localStorage.removeItem('stickyNotesApp');
     document.querySelectorAll('.sticky').forEach(sticky => sticky.remove());
-    showNotification('Local storage cleared');
+    showNotification('Save data cleared');
     hideClearConfirmation();
 }
 
@@ -364,27 +497,31 @@ document.getElementById('closePopupButton').addEventListener('click', function()
 
 document.getElementById('saveButton').addEventListener('click', saveToLocalStorage);
 
-function adjustTextareaSize(imageUrl, textarea) {
+function adjustTextareaSize(imageUrl, textOverlay) {
     switch (imageUrl) {
         case 'https://raw.githubusercontent.com/razvanpf/Images/main/stickynote.png':
-            textarea.style.width = '50%';
-            textarea.style.height = '50%';
+            textOverlay.style.width = '50%';
+            textOverlay.style.height = '50%';
             break;
         case 'https://raw.githubusercontent.com/razvanpf/Images/main/stickynote2.png':
-            textarea.style.width = '75%';
-            textarea.style.height = '70%';
+            textOverlay.style.width = '75%';
+            textOverlay.style.height = '70%';
             break;
         case 'https://raw.githubusercontent.com/razvanpf/Images/main/stickynote3.png':
-            textarea.style.width = '75%';
-            textarea.style.height = '55%';
+            textOverlay.style.width = '75%';
+            textOverlay.style.height = '55%';
             break;
         case 'https://raw.githubusercontent.com/razvanpf/Images/main/stickynote4.png':
-            textarea.style.width = '76%';
-            textarea.style.height = '55%';
+            textOverlay.style.width = '76%';
+            textOverlay.style.height = '55%';
+            break;
+        case 'https://raw.githubusercontent.com/razvanpf/Images/main/stickynote5.png':
+            textOverlay.style.width = '76%';
+            textOverlay.style.height = '70%';
             break;
         default:
-            textarea.style.width = '75%';
-            textarea.style.height = '75%';
+            textOverlay.style.width = '75%';
+            textOverlay.style.height = '75%';
     }
 }
 
@@ -412,19 +549,40 @@ document.getElementById('closePopupButton').addEventListener('click', function()
 });
 
 //Filter Bar
+// Function to filter sticky notes
 function filterStickyNotes() {
     const keyword = document.getElementById('keywordInput').value.toLowerCase();
-    const date = document.getElementById('dateInput').value;
+    const fromDate = document.getElementById('fromDateInput').value;
+    const toDate = document.getElementById('toDateInput').value;
     const tags = document.getElementById('tagInput').value.split(',').map(tag => tag.trim().toLowerCase());
 
     document.querySelectorAll('.sticky').forEach(sticky => {
         const textContent = sticky.querySelector('textarea').value.toLowerCase();
-        const stickyDate = sticky.dataset.date || '';
+        const stickyFromDate = sticky.dataset.dateFrom || '';
+        const stickyToDate = sticky.dataset.dateTo || '';
         const stickyTags = sticky.dataset.tags ? sticky.dataset.tags.split(',').map(tag => tag.trim().toLowerCase()) : [];
 
         const keywordMatch = !keyword || textContent.includes(keyword);
-        const dateMatch = !date || stickyDate === date;
         const tagMatch = !tags[0] || tags.every(tag => stickyTags.includes(tag));
+
+        // Date range matching logic
+        let dateMatch = true;
+        if (fromDate || toDate) {
+            dateMatch = false; // Assume no match unless found
+
+            if (fromDate && !toDate) {
+                // Match any note with a from date matching the filter
+                dateMatch = stickyFromDate === fromDate || stickyToDate === fromDate;
+            } else if (!fromDate && toDate) {
+                // Match any note with a to date matching the filter
+                dateMatch = stickyFromDate === toDate || stickyToDate === toDate;
+            } else if (fromDate && toDate) {
+                // Match any note that falls within the range or matches the exact range
+                dateMatch = (stickyFromDate >= fromDate && stickyToDate <= toDate) ||
+                            (stickyFromDate <= toDate && stickyToDate >= fromDate) ||
+                            (stickyFromDate === fromDate && stickyToDate === toDate);
+            }
+        }
 
         if (keywordMatch && dateMatch && tagMatch) {
             sticky.style.visibility = 'visible';
@@ -436,24 +594,31 @@ function filterStickyNotes() {
     });
 }
 
+// Function to reset sticky position if needed
+function resetStickyPosition(sticky) {
+    sticky.style.top = '';
+    sticky.style.left = '';
+}
+
+// Function to reset filters
 function resetFilters() {
-    // Clear input fields
-    document.getElementById('keywordInput').value = '';
-    document.getElementById('dateInput').value = '';
-    document.getElementById('tagInput').value = '';
+    // Clear input fields, ensure elements exist
+    const keywordInput = document.getElementById('keywordInput');
+    const fromDateInput = document.getElementById('fromDateInput');
+    const toDateInput = document.getElementById('toDateInput');
+    const tagInput = document.getElementById('tagInput');
+
+    if (keywordInput) keywordInput.value = '';
+    if (fromDateInput) fromDateInput.value = '';
+    if (toDateInput) toDateInput.value = '';
+    if (tagInput) tagInput.value = '';
 
     // Reset the display of all sticky notes
     document.querySelectorAll('.sticky').forEach(sticky => {
         sticky.style.visibility = 'visible';
         sticky.style.position = 'relative'; // Ensure they flow in normal document flow
-        resetStickyPosition(sticky); // If you're using absolute positioning for filtering
+        resetStickyPosition(sticky);
     });
-}
-
-function resetStickyPosition(sticky) {
-    // Remove any inline styles that might have been added for positioning during filtering
-    sticky.style.top = '';
-    sticky.style.left = '';
 }
 
 function showNotification(message) {
@@ -478,3 +643,36 @@ function showNotification(message) {
         document.body.removeChild(notification);
     }, 2000);
 }
+
+
+// Toggle the text format toolbar
+document.getElementById('textFormatButton').addEventListener('click', function() {
+    const toolbar = document.getElementById('textFormatToolbar');
+    toolbar.classList.toggle('hidden');
+});
+
+// Function to apply formatting to selected text
+function applyTextFormat(command, value = null) {
+    document.execCommand(command, false, value);
+}
+
+// Add event listeners for toolbar actions
+document.getElementById('fontFamilySelect').addEventListener('change', function() {
+    applyTextFormat('fontName', this.value);
+});
+
+document.getElementById('boldButton').addEventListener('click', function() {
+    applyTextFormat('bold');
+});
+
+document.getElementById('italicButton').addEventListener('click', function() {
+    applyTextFormat('italic');
+});
+
+document.getElementById('underlineButton').addEventListener('click', function() {
+    applyTextFormat('underline');
+});
+
+document.getElementById('textSizeSelect').addEventListener('change', function() {
+    applyTextFormat('fontSize', this.selectedIndex + 1);
+});

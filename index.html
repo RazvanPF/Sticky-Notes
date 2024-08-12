@@ -7,67 +7,103 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div id="sidebar">
-    <button id="noteButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/stickynote.png');"></button>
-    <button id="addNoteButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/plusicon.png');"></button>
-    <button id="removeButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/removeicon2.png');"></button>
-    <button id="toggleBorderButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/gridicon2.png');"></button>
-    <button id="saveButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/saveicon.png');"></button>
-    <button id="clearStorageButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/clearicn.png');"></button>
-    <!-- "?" Button for Instructions -->
-    <button id="helpButton" class="button help-button">?</button>
-    
-</div>
-<div id="noteSelector" class="sidebar">
-    <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote.png" class="noteIcon" alt="Yellow Note">
-    <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote2.png" class="noteIcon" alt="White Note">
-    <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote3.png" class="noteIcon" alt="Blue Note">
-    <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote4.png" class="noteIcon" alt="Green Note">
-</div>
-<div id="filterBar" style="padding: 10px; margin-left: 230px; /* Adjust as per sidebar width */">
-    <input type="text" id="keywordInput" placeholder="Search Keywords" style="margin-right: 10px;">
-    <input type="date" id="dateInput" style="margin-right: 10px;">
-    <input type="text" id="tagInput" placeholder="Tags, separated by commas">
-    <button onclick="filterStickyNotes()">Filter</button>
-    <button onclick="resetFilters()">Reset</button>
-</div>
-<div id="board"></div>
-
-<!-- Popup for Instructions -->
-<div id="instructionPopup" class="popup hidden">
-    <div class="popup-content">
-        <h2>Welcome to Sticky Notes!</h2>
-        <p>Sticky notes app allows you to add up to 16 sticky notes, add text on them, move them around as you see fit and more!</p>
-        <h3>Instructions:</h3>
-        <ul id="iconedlist">
-            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote.png" alt="Sticky Note" class="icon"> opens a new sidebar for you to choose which type of sticky note you want to use.</li>
-            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/plusicon.png" alt="Plus" class="icon"> automatically adds selected sticky note type in the first grid available location.</li>
-            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/removeicon2.png" alt="Remove" class="icon"> then clicking any existing sticky note removes it. Deactivate remove option by clicking it again.</li>
-            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/gridicon2.png" alt="Grid" class="icon"> toggles visibility of the grid squares for visual aid.</li>
-            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/saveicon.png" alt="Grid" class="icon"> saves current state so you can find everything as you left it upon return.</li>
-            <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/clearicn.png" alt="Grid" class="icon"> clears the board and all save data so you can start from scratch.</li>
-        </ul>
-        <ul>
-            <li><strong>Drag and Drop:</strong> Left-click and drag a sticky note icon from selector sidebar to place it anywhere.</li>
-            <li><strong>Move Note:</strong> To reposition existing sticky note, SHIFT + left-click and dragging it to desired location.</li>
-            <li><strong>Edit Notes:</strong> Click within a sticky note to start typing in the text area provided.</li>
-        </ul>
-        <button id="closePopupButton" class="close-popup-button">I got it</button>
+    <div class="app-container div-scrollbar" style="width: 100%; height: 100%; overflow: hidden;">
+    <div id="sidebar">
+        <button id="noteButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/stickynote.png');"></button>
+        <button id="addNoteButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/plusicon.png');"></button>
+        <button id="removeButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/removeicon2.png');"></button>
+        <button id="toggleBorderButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/gridicon2.png');"></button>
+        <button id="textFormatButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/textediticon.png');"></button>
+        <button id="saveButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/saveicon.png');"></button>
+        <button id="clearStorageButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/clearicn.png');"></button>
+        <!-- "?" Button for Instructions -->
+        <button id="helpButton" class="button help-button">?</button>
+        
     </div>
-</div>
+    <div id="noteSelector" class="sidebar">
+        <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote.png" class="noteIcon" alt="Yellow Note">
+        <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote2.png" class="noteIcon" alt="White Note">
+        <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote3.png" class="noteIcon" alt="Blue Note">
+        <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote4.png" class="noteIcon" alt="Green Note">
+        <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote5.png" class="noteIcon" alt="Pink Note">
+    </div>
+    <div id="filterBar" style="padding: 10px; margin-left: 180px; /* Adjust as per sidebar width */">
+        <input type="text" id="keywordInput" placeholder="Search Keywords" style="margin-right: 10px;">
+        <label for="fromDateInput">From:</label>
+        <input type="date" id="fromDateInput" style="margin-right: 10px;">
+        <label for="toDateInput">To:</label>
+        <input type="date" id="toDateInput" style="margin-right: 10px;">
+        <input type="text" id="tagInput" placeholder="Tags, separated by commas">
+        <button onclick="filterStickyNotes()">Filter</button>
+        <button onclick="resetFilters()">Reset</button>
+    </div>
+    <div id="board"></div>
 
-<!-- Clear Storage Confirmation Popup -->
-<div id="clearConfirmation" class="popup hidden">
-    <div class="confirmpopup-content">
-        <h2>Clear Save Files</h2>
-        <p>Do you really want to clear the board and all saved data?</p>
-        <div class="button-container">
-            <button id="confirmClearYes" class="confirm-button yes-button">Yes</button>
-            <button id="confirmClearNo" class="confirm-button cancel-button">Cancel</button>
+    <!-- Popup for Instructions -->
+    <div id="instructionPopup" class="popup hidden">
+        <div class="popup-content">
+            <h2>Welcome to Sticky Notes!</h2>
+            <p>Sticky notes app allows you to add up to 16 sticky notes, add text on them, move them around as you see fit and more!</p>
+            <h3>Instructions:</h3>
+            <ul id="iconedlist">
+                <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote.png" alt="Sticky Note" class="icon"> opens a new sidebar for you to choose which type of sticky note you want to use.</li>
+                <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/plusicon.png" alt="Plus" class="icon"> automatically adds selected sticky note type in the first grid available location.</li>
+                <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/removeicon2.png" alt="Remove" class="icon"> then clicking any existing sticky note removes it. Deactivate remove option by clicking it again.</li>
+                <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/gridicon2.png" alt="Grid" class="icon"> toggles visibility of the grid squares for visual aid.</li>
+                <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/textediticon.png" alt="Grid" class="icon"> toggles visibility of rich text settings toolbar</li>
+                <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/saveicon.png" alt="Grid" class="icon"> saves current state so you can find everything as you left it upon return.</li>
+                <li><img src="https://raw.githubusercontent.com/razvanpf/Images/main/clearicn.png" alt="Grid" class="icon"> clears the board and all save data so you can start from scratch.</li>
+            </ul>
+            <ul>
+                <li><strong>Drag and Drop:</strong> Left-click and drag a sticky note icon from selector sidebar to place it anywhere.</li>
+                <li><strong>Move Note:</strong> To reposition existing sticky note, SHIFT + left-click and dragging it to desired location.</li>
+                <li><strong>Edit Notes:</strong> Click within a sticky note to start typing in the text area provided.</li>
+                <li><strong>Edit Text:</strong> Highlight text you want to edit and use the rich text toolbar to edit selected text.</li>
+            </ul>
+            <button id="closePopupButton" class="close-popup-button">I got it</button>
         </div>
     </div>
-</div>
 
+    <!-- Clear Storage Confirmation Popup -->
+    <div id="clearConfirmation" class="popup hidden">
+        <div class="confirmpopup-content">
+            <h2>Clear Save Files</h2>
+            <p>Do you really want to clear the board and all saved data?</p>
+            <div class="button-container">
+                <button id="confirmClearYes" class="confirm-button yes-button">Yes</button>
+                <button id="confirmClearNo" class="confirm-button cancel-button">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="textFormatToolbar" class="text-toolbar hidden">
+        <select id="fontFamilySelect">
+            <option value="Arial">Arial</option>
+            <option value="Helvetica">Helvetica</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Tahoma">Tahoma</option>
+            <option value="Trebuchet MS">Trebuchet MS</option>
+            <option value="Impact">Impact</option>
+            <option value="Comic Sans MS">Comic Sans MS</option>
+        </select>
+        <button class="format-button" id="boldButton"><b>B</b></button>
+        <button class="format-button" id="italicButton"><i>I</i></button>
+        <button class="format-button" id="underlineButton"><u>U</u></button>
+        <select id="textSizeSelect">
+            <option value="12px">12px</option>
+            <option value="14px">14px</option>
+            <option value="16px" selected>16px</option>
+            <option value="18px">18px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="28px">28px</option>
+            <option value="32px">32px</option>
+        </select>
+    </div>
+</div>
 <script src="app.js"></script>
 </body>
 </html>

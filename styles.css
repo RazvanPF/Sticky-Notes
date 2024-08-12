@@ -1,8 +1,19 @@
 body, html {
+    width: 100%;
     height: 100%;
     margin: 0;
-    font-family: Arial, sans-serif;
-    overflow: hidden; /* Prevent scrolling */
+    padding: 0;
+    overflow: hidden;
+}
+
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px; /* Adjust based on your sidebar width */
+    height: 100vh;
+    background-color: #f0f0f0; /* Example background color */
+    z-index: 10; /* Keeps sidebar above other content */
 }
 
 #sidebar, #noteSelector {
@@ -47,12 +58,12 @@ body, html {
 
 #board {
     position: absolute;
-    left: 230px; /* Adjusted to start right after the sidebar */
+    left: 170px; /* Adjusted to start right after the sidebar */
     top: 60px; /* Height of the filter bar plus some padding */
     right: 0;
     bottom: 0;
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Each column is 387px wide */
+    grid-template-columns: repeat(4, 392px); /* Each column is 387px wide */
     grid-auto-rows: 392px; /* Each row is 392px tall */
     gap: 10px;
     padding: 10px;
@@ -87,6 +98,20 @@ textarea {
 
 .button#noteButton {
     background-size: 50px 50px; /* Set icon size */
+    background-repeat: no-repeat; /* Prevent icon repeat */
+    background-position: center; /* Center the icon */
+}
+
+.button#helpButton {
+    background-size: 50px 50px; /* Set icon size */
+    background-repeat: no-repeat; /* Prevent icon repeat */
+    background-position: center; /* Center the icon */
+    margin-bottom: 50px;
+}
+
+
+.button#textFormatButton {
+    background-size: 40px 40px; /* Set icon size */
     background-repeat: no-repeat; /* Prevent icon repeat */
     background-position: center; /* Center the icon */
 }
@@ -137,26 +162,30 @@ textarea {
     background-color: rgba(173, 216, 230, 0.5); /* Light blue background for highlighting */
 }
 
-/* Styles the scrollbar track (part the thumb slides within) */
-textarea::-webkit-scrollbar-track {
+/* Styles the scrollbar track for textareas and divs in .sticky */
+.sticky textarea::-webkit-scrollbar-track,
+.sticky div::-webkit-scrollbar-track {
     background-color: #f0f0f0; /* Light grey track */
 }
 
-/* Styles the scrollbar thumb (the part that's draggable) */
-textarea::-webkit-scrollbar-thumb {
+/* Styles the scrollbar thumb for textareas and divs in .sticky */
+.sticky textarea::-webkit-scrollbar-thumb,
+.sticky div::-webkit-scrollbar-thumb {
     background-color: #888; /* Darker grey thumb */
     border-radius: 10px; /* Optionally round the corners */
 }
 
-/* Styles the scrollbar itself (width and background) */
-textarea::-webkit-scrollbar {
+/* Styles the scrollbar itself for textareas and divs in .sticky */
+.sticky textarea::-webkit-scrollbar,
+.sticky div::-webkit-scrollbar {
     width: 8px; /* Thin scrollbar width */
     background-color: #f0f0f0; /* Light grey scrollbar background */
     border-radius: 10px;
 }
 
-/* Additional styling for the scrollbar corner (optional) */
-textarea::-webkit-scrollbar-corner {
+/* Additional styling for the scrollbar corner for textareas and divs in .sticky */
+.sticky textarea::-webkit-scrollbar-corner,
+.sticky div::-webkit-scrollbar-corner {
     background-color: #f0f0f0; /* Background color of the corner */
     border-radius: 10px;
 }
@@ -173,6 +202,7 @@ textarea::-webkit-scrollbar-corner {
     align-items: center;
     justify-content: center;
     margin-top: auto; /* Push it to the bottom of the sidebar */
+    margin-bottom: 10px;
 }
 
 .popup {
@@ -197,7 +227,7 @@ textarea::-webkit-scrollbar-corner {
     padding: 20px;
     max-width: 765px; /* Max width for the popup content */
     width: 100%;
-    max-height: 500px;
+    max-height: 700px;
     overflow-y: auto;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
@@ -262,6 +292,12 @@ textarea::-webkit-scrollbar-corner {
     z-index: 10;
     top: 40px;
     right: 10px;
+    justify-content: space-between; /* Add space between label and input */
+    margin-bottom: 5px; /* Margin below each label */
+}
+
+.settings-popup input[type="date"] {
+    margin-left: 5px; /* Space between label and input */
 }
 
 .settings-popup label {
@@ -309,10 +345,10 @@ textarea::-webkit-scrollbar-corner {
 
 #filterBar {
     position: absolute;
-    left: 10px; /* Align with the left edge of the board */
-    max-width: 1615px ;
+    left: 1px; /* Align with the left edge of the board */
+    max-width: 1575px ;
+    width: 100%;
     top: 5px;
-    right: 0;
     padding: 10px;
     background-color: #f0f0f0;
     z-index: 100; /* Ensures it stays on top */
@@ -389,4 +425,60 @@ textarea::-webkit-scrollbar-corner {
     justify-content: center; /* Center-align the buttons horizontally */
     gap: 10px; /* Add space between the buttons */
     margin-top: 10px; /* Add some margin above the button container */
+}
+
+.warning {
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+.date-display {
+    position: absolute;
+    bottom: 5px; /* Adjust spacing to bottom edge */
+    left: 5px; /* Spacing from left edge */
+    right: 5px; /* Spacing from right edge */
+    text-align: center;
+    color: #333; /* Text color */
+    font-size: 12px; /* Text size */
+    overflow: hidden; /* Hide overflow */
+    white-space: nowrap; /* Prevent wrapping */
+    text-overflow: ellipsis; /* Show ellipsis for overflow */
+}
+
+label {
+    margin-right: 5px; /* Adjust the right margin of labels */
+}
+
+input[type="date"] {
+    margin-left: 5px; /* Add left margin to the date inputs for extra spacing */
+}
+
+.text-toolbar {
+    position: absolute;
+    top: 70px; /* Adjust this as necessary */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+}
+
+.text-toolbar select,
+.text-toolbar button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.text-toolbar button.format-button {
+    font-size: 16px;
+    border: none;
+    background: none;
+}
+
+.text-toolbar.hidden {
+    display: none;
 }
