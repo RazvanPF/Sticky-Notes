@@ -336,17 +336,9 @@ textarea::-webkit-scrollbar-corner {
     cursor: pointer;
 }
 
-/* Notification styling */
-.notification {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    z-index: 1000;
-}
+/*.notification {
+ Notification styling is done inside JS
+ */
 
 /* Style for confirmation popup buttons */
 .confirm-button {

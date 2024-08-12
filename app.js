@@ -460,14 +460,18 @@ function showNotification(message) {
     const notification = document.createElement('div');
     notification.textContent = message;
     notification.style.position = 'fixed';
-    notification.style.top = '10px';
+    notification.style.bottom = '20px';
     notification.style.left = '50%';
     notification.style.transform = 'translateX(-50%)';
     notification.style.backgroundColor = 'green';
     notification.style.color = 'white';
-    notification.style.padding = '10px';
-    notification.style.borderRadius = '5px';
+    notification.style.paddingLeft = '50px';
+    notification.style.paddingRight = '50px';
+    notification.style.paddingTop = '10px';
+    notification.style.paddingBottom = '10px';
+    notification.style.borderRadius = '7px';
     notification.style.zIndex = '1000';
+    notification.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.8)';
     document.body.appendChild(notification);
     
     setTimeout(() => {
