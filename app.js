@@ -287,108 +287,48 @@ function createSticky(imageUrl, cell) {
     return sticky;
 }
 
-// Function to save the state of the application to localStorage
+// Save the application state to localStorage
 function saveToLocalStorage() {
     let notesData = Array.from(document.querySelectorAll('.sticky')).map(sticky => {
         const textOverlay = sticky.querySelector('.editable-text');
         return {
-            imageUrl: sticky.style.backgroundImage.slice(5, -2),
-            text: textOverlay.innerHTML, // Save the HTML content
-            style: { // Save styles
-                fontFamily: textOverlay.style.fontFamily,
-                fontSize: textOverlay.style.fontSize,
-                fontWeight: textOverlay.style.fontWeight,
-                fontStyle: textOverlay.style.fontStyle,
-                textDecoration: textOverlay.style.textDecoration
+            i: sticky.style.backgroundImage.slice(5, -2), // imageUrl
+            t: textOverlay.innerHTML, // text content
+            s: { // style properties
+                f: textOverlay.style.fontFamily || '',
+                z: textOverlay.style.fontSize || '',
+                w: textOverlay.style.fontWeight || '',
+                y: textOverlay.style.fontStyle || '',
+                d: textOverlay.style.textDecoration || ''
             },
-            dateFrom: sticky.dataset.dateFrom,
-            dateTo: sticky.dataset.dateTo,
-            tags: sticky.dataset.tags,
-            position: {
-                cellIndex: Array.from(sticky.parentElement.parentElement.children).indexOf(sticky.parentElement),
+            dF: sticky.dataset.dateFrom || '',
+            dT: sticky.dataset.dateTo || '',
+            g: sticky.dataset.tags || '',
+            p: {
+                cI: Array.from(sticky.parentElement.parentElement.children).indexOf(sticky.parentElement),
             }
         };
     });
 
     let appState = {
-        notes: notesData,
-        selectedImage: currentNoteImage,
-        gridVisibility: bordersVisible,
+        n: notesData,
+        sI: currentNoteImage,
+        gV: bordersVisible,
     };
 
+    // Store the state in localStorage
     localStorage.setItem('stickyNotesApp', JSON.stringify(appState));
     showNotification('Content saved');
 }
 
-// Function to load the state of the application from localStorage
+// Load saved state from localStorage
 function loadFromLocalStorage() {
-    let urlParams = new URLSearchParams(window.location.search);
-    let encodedState = urlParams.get('state');
-    let savedState;
-
-    if (encodedState) {
-        // Decode the state from the URL
-        try {
-            savedState = JSON.parse(decodeURIComponent(encodedState));
-            console.log("Loaded state from URL", savedState);
-        } catch (e) {
-            console.error("Failed to decode state from URL", e);
-            //showNotification('Failed to load shared state');
-        }
-    } else {
-        // Fallback to local storage
-        savedState = JSON.parse(localStorage.getItem('stickyNotesApp'));
-        console.log("Loaded state from Local Storage", savedState);
-    }
-
+    let savedState = JSON.parse(localStorage.getItem('stickyNotesApp'));
     if (savedState) {
-        if (savedState.notes) {
-            savedState.notes.forEach(note => {
-                let board = document.getElementById('board');
-                let cell = board.querySelector(`.grid-cell:nth-child(${note.position.cellIndex + 1})`);
-                if (cell) {
-                    let sticky = createSticky(note.imageUrl, cell);
-                    const textOverlay = sticky.querySelector('.editable-text');
-                    textOverlay.innerHTML = note.text; // Restore the HTML content
-                    textOverlay.style.fontFamily = note.style.fontFamily || '';
-                    textOverlay.style.fontSize = note.style.fontSize || '';
-                    textOverlay.style.fontWeight = note.style.fontWeight || '';
-                    textOverlay.style.fontStyle = note.style.fontStyle || '';
-                    textOverlay.style.textDecoration = note.style.textDecoration || '';
-
-                    sticky.dataset.dateFrom = note.dateFrom || '';
-                    sticky.dataset.dateTo = note.dateTo || '';
-                    sticky.dataset.tags = note.tags || '';
-
-                    // Handle checkbox and date inputs
-                    const settingsPopup = sticky.querySelector('.settings-popup');
-                    const dateCheckbox = settingsPopup.querySelector('.toggle');
-                    const fromDateInput = settingsPopup.querySelector('.date-input:first-of-type');
-                    const toDateInput = settingsPopup.querySelector('.date-input:last-of-type');
-
-                    dateCheckbox.checked = !!(note.dateFrom && note.dateTo);
-                    fromDateInput.disabled = !dateCheckbox.checked;
-                    toDateInput.disabled = !dateCheckbox.checked;
-                    fromDateInput.value = note.dateFrom || '';
-                    toDateInput.value = note.dateTo || '';
-
-                    // Update the date display immediately after loading
-                    updateDateDisplay(sticky, note.dateFrom, note.dateTo, dateCheckbox.checked);
-                }
-            });
-        }
-
-        if (savedState.selectedImage) {
-            currentNoteImage = savedState.selectedImage;
-            document.getElementById('noteButton').style.backgroundImage = `url(${currentNoteImage})`;
-        }
-
-        bordersVisible = savedState.gridVisibility;
-        document.querySelectorAll('.grid-cell').forEach(cell => {
-            cell.style.border = bordersVisible ? '1px dashed #d6d6d6' : 'none';
-        });
+        populateBoard(savedState);
     }
 }
+
 
 // Make sure this runs when the document is ready
 document.addEventListener('DOMContentLoaded', loadFromLocalStorage);
@@ -726,18 +666,18 @@ function generateShareableUrl() {
         const textOverlay = sticky.querySelector('.editable-text');
         return {
             i: sticky.style.backgroundImage.slice(5, -2), // imageUrl
-            t: textOverlay.innerHTML, // text
-            s: { // style
-                f: textOverlay.style.fontFamily || '', // fontFamily
-                z: textOverlay.style.fontSize || '',   // fontSize
-                w: textOverlay.style.fontWeight || '', // fontWeight
-                y: textOverlay.style.fontStyle || '',  // fontStyle
-                d: textOverlay.style.textDecoration || '' // textDecoration
+            t: textOverlay.innerHTML, // text content
+            s: { // style properties
+                f: textOverlay.style.fontFamily || '',
+                z: textOverlay.style.fontSize || '',
+                w: textOverlay.style.fontWeight || '',
+                y: textOverlay.style.fontStyle || '',
+                d: textOverlay.style.textDecoration || ''
             },
-            dF: sticky.dataset.dateFrom || '', // dateFrom
-            dT: sticky.dataset.dateTo || '',   // dateTo
-            g: sticky.dataset.tags || '',      // tags
-            p: { // position
+            dF: sticky.dataset.dateFrom || '',
+            dT: sticky.dataset.dateTo || '',
+            g: sticky.dataset.tags || '',
+            p: {
                 cI: Array.from(sticky.parentElement.parentElement.children).indexOf(sticky.parentElement),
             }
         };
@@ -749,13 +689,13 @@ function generateShareableUrl() {
         gV: bordersVisible,
     };
 
-    // Compress and encode the state
+    // Compress the state to minimize URL length
     let compressedState = LZString.compressToEncodedURIComponent(JSON.stringify(appState));
 
     // Create the shareable URL
     let shareableUrl = `${window.location.origin}${window.location.pathname}?state=${compressedState}`;
 
-    // Copy the shareable URL to clipboard and alert
+    // Copy the shareable URL to clipboard
     navigator.clipboard.writeText(shareableUrl).then(() => {
         alert("Shareable URL has been copied to clipboard!");
     }).catch(err => {
@@ -772,71 +712,79 @@ function loadStateFromUrl() {
             const decodedState = LZString.decompressFromEncodedURIComponent(encodedState);
             const savedState = JSON.parse(decodedState);
             if (savedState) {
-                if (savedState.n) {
-                    savedState.n.forEach(note => {
-                        let board = document.getElementById('board');
-                        let cell = board.querySelector(`.grid-cell:nth-child(${note.p.cI + 1})`);
-                        if (cell) {
-                            let sticky = createSticky(note.i, cell);
-                            const textOverlay = sticky.querySelector('.editable-text');
-                            textOverlay.innerHTML = note.t; // Restore the HTML content
-
-                            // Apply saved styles if textOverlay is not null
-                            if (textOverlay) {
-                                textOverlay.style.fontFamily = note.s.f || '';
-                                textOverlay.style.fontSize = note.s.z || '';
-                                textOverlay.style.fontWeight = note.s.w || '';
-                                textOverlay.style.fontStyle = note.s.y || '';
-                                textOverlay.style.textDecoration = note.s.d || '';
-                            }
-
-                            sticky.dataset.dateFrom = note.dF || '';
-                            sticky.dataset.dateTo = note.dT || '';
-                            sticky.dataset.tags = note.g || '';
-
-                            // Handle checkbox and date inputs if they exist
-                            const settingsPopup = sticky.querySelector('.settings-popup');
-                            if (settingsPopup) {
-                                const dateCheckbox = settingsPopup.querySelector('.toggle');
-                                const fromDateInput = settingsPopup.querySelector('.date-input:first-of-type');
-                                const toDateInput = settingsPopup.querySelector('.date-input:last-of-type');
-
-                                if (dateCheckbox) {
-                                    dateCheckbox.checked = !!(note.dF && note.dT);
-                                }
-                                if (fromDateInput) {
-                                    fromDateInput.disabled = !dateCheckbox.checked;
-                                    fromDateInput.value = note.dF || '';
-                                }
-                                if (toDateInput) {
-                                    toDateInput.disabled = !dateCheckbox.checked;
-                                    toDateInput.value = note.dT || '';
-                                }
-
-                                // Update the date display immediately after loading
-                                updateDateDisplay(sticky, note.dF, note.dT, dateCheckbox.checked);
-                            }
-                        }
-                    });
-                }
-
-                if (savedState.sI) {
-                    currentNoteImage = savedState.sI;
-                    const noteButton = document.getElementById('noteButton');
-                    if (noteButton) {
-                        noteButton.style.backgroundImage = `url(${currentNoteImage})`;
-                    }
-                }
-
-                bordersVisible = savedState.gV;
-                document.querySelectorAll('.grid-cell').forEach(cell => {
-                    cell.style.border = bordersVisible ? '1px dashed #d6d6d6' : 'none';
-                });
+                populateBoard(savedState);
             }
         } catch (error) {
             console.error("Failed to decode state from URL", error);
+            showNotification('Failed to load shared state');
         }
     }
+}
+
+// Helper function to populate the board from a saved state
+function populateBoard(savedState) {
+    if (savedState.n) {
+        document.querySelectorAll('.sticky').forEach(sticky => sticky.remove()); // Clear existing notes
+
+        savedState.n.forEach(note => {
+            let board = document.getElementById('board');
+            let cell = board.querySelector(`.grid-cell:nth-child(${note.p.cI + 1})`);
+            if (cell) {
+                let sticky = createSticky(note.i, cell);
+                const textOverlay = sticky.querySelector('.editable-text');
+                textOverlay.innerHTML = note.t; // Restore the HTML content
+
+                // Apply saved styles
+                if (textOverlay) {
+                    textOverlay.style.fontFamily = note.s.f || '';
+                    textOverlay.style.fontSize = note.s.z || '';
+                    textOverlay.style.fontWeight = note.s.w || '';
+                    textOverlay.style.fontStyle = note.s.y || '';
+                    textOverlay.style.textDecoration = note.s.d || '';
+                }
+
+                sticky.dataset.dateFrom = note.dF || '';
+                sticky.dataset.dateTo = note.dT || '';
+                sticky.dataset.tags = note.g || '';
+
+                // Handle checkbox and date inputs if they exist
+                const settingsPopup = sticky.querySelector('.settings-popup');
+                if (settingsPopup) {
+                    const dateCheckbox = settingsPopup.querySelector('.toggle');
+                    const fromDateInput = settingsPopup.querySelector('.date-input:first-of-type');
+                    const toDateInput = settingsPopup.querySelector('.date-input:last-of-type');
+
+                    if (dateCheckbox) {
+                        dateCheckbox.checked = !!(note.dF && note.dT);
+                    }
+                    if (fromDateInput) {
+                        fromDateInput.disabled = !dateCheckbox.checked;
+                        fromDateInput.value = note.dF || '';
+                    }
+                    if (toDateInput) {
+                        toDateInput.disabled = !dateCheckbox.checked;
+                        toDateInput.value = note.dT || '';
+                    }
+
+                    // Update the date display immediately after loading
+                    updateDateDisplay(sticky, note.dF, note.dT, dateCheckbox.checked);
+                }
+            }
+        });
+    }
+
+    if (savedState.sI) {
+        currentNoteImage = savedState.sI;
+        const noteButton = document.getElementById('noteButton');
+        if (noteButton) {
+            noteButton.style.backgroundImage = `url(${currentNoteImage})`;
+        }
+    }
+
+    bordersVisible = savedState.gV;
+    document.querySelectorAll('.grid-cell').forEach(cell => {
+        cell.style.border = bordersVisible ? '1px dashed #d6d6d6' : 'none';
+    });
 }
 
 // Add event listener for the static share button in your HTML
