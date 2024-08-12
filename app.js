@@ -107,19 +107,22 @@ function createSticky(imageUrl, cell) {
     textOverlay.style.left = '50%';
     textOverlay.style.transform = 'translate(-50%, -50%)'; // Center the textarea
     textOverlay.style.zIndex = '1';
-    textOverlay.style.display = 'flex';
+    textOverlay.style.display = 'block'; // Changed to block to handle text better
     textOverlay.style.padding = '5px';
     textOverlay.style.overflow = 'auto';
     textOverlay.style.background = 'transparent'; // Ensure it blends with textarea
+    textOverlay.style.whiteSpace = 'pre-wrap'; // Preserve whitespace and line breaks
+    textOverlay.style.wordWrap = 'break-word'; // Break words if necessary
+    textOverlay.style.outline = 'none'; // Remove focus outline
     sticky.appendChild(textOverlay);
 
     adjustTextareaSize(imageUrl, textOverlay);
 
     // Handle Enter key to insert a new line
     textOverlay.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault(); // Prevent default behavior
-            document.execCommand('insertLineBreak'); // Insert new line
+            document.execCommand('insertHTML', false, '<br>'); // Insert new line
         }
     });
 
@@ -273,18 +276,16 @@ function createSticky(imageUrl, cell) {
         }
     });
 
-        // Add event listener for links to open in a new tab
-        textOverlay.addEventListener('click', function(event) {
-            if (event.target.tagName === 'A') {
-                event.preventDefault();
-                window.open(event.target.href, '_blank');
-            }
-        });
+    // Add event listener for links to open in a new tab
+    textOverlay.addEventListener('click', function(event) {
+        if (event.target.tagName === 'A') {
+            event.preventDefault();
+            window.open(event.target.href, '_blank');
+        }
+    });
 
     return sticky;
 }
-
-
 
 // Function to save the state of the application to localStorage
 function saveToLocalStorage() {
@@ -332,7 +333,7 @@ function loadFromLocalStorage() {
             console.log("Loaded state from URL", savedState);
         } catch (e) {
             console.error("Failed to decode state from URL", e);
-            showNotification('Failed to load shared state');
+            //showNotification('Failed to load shared state');
         }
     } else {
         // Fallback to local storage
@@ -347,13 +348,13 @@ function loadFromLocalStorage() {
                 let cell = board.querySelector(`.grid-cell:nth-child(${note.position.cellIndex + 1})`);
                 if (cell) {
                     let sticky = createSticky(note.imageUrl, cell);
-                    const textarea = sticky.querySelector('textarea');
-                    textarea.value = note.text; // Restore the text content
-                    textarea.style.fontFamily = note.style.fontFamily;
-                    textarea.style.fontSize = note.style.fontSize;
-                    textarea.style.fontWeight = note.style.fontWeight;
-                    textarea.style.fontStyle = note.style.fontStyle;
-                    textarea.style.textDecoration = note.style.textDecoration;
+                    const textOverlay = sticky.querySelector('.editable-text');
+                    textOverlay.innerHTML = note.text; // Restore the HTML content
+                    textOverlay.style.fontFamily = note.style.fontFamily || '';
+                    textOverlay.style.fontSize = note.style.fontSize || '';
+                    textOverlay.style.fontWeight = note.style.fontWeight || '';
+                    textOverlay.style.fontStyle = note.style.fontStyle || '';
+                    textOverlay.style.textDecoration = note.style.textDecoration || '';
 
                     sticky.dataset.dateFrom = note.dateFrom || '';
                     sticky.dataset.dateTo = note.dateTo || '';
@@ -665,43 +666,62 @@ function showNotification(message) {
     }, 2000);
 }
 
-
 // Toggle the text format toolbar
 document.getElementById('textFormatButton').addEventListener('click', function() {
     const toolbar = document.getElementById('textFormatToolbar');
     toolbar.classList.toggle('hidden');
 });
 
-// Function to apply formatting to selected text
-function applyTextFormat(command, value = null) {
-    document.execCommand(command, false, value);
+// Improved text format handling
+function formatSelectedText(command, value = null) {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        document.execCommand(command, false, value);
+    }
 }
 
 // Add event listeners for toolbar actions
 document.getElementById('fontFamilySelect').addEventListener('change', function() {
-    applyTextFormat('fontName', this.value);
+    formatSelectedText('fontName', this.value);
 });
 
 document.getElementById('boldButton').addEventListener('click', function() {
-    applyTextFormat('bold');
+    formatSelectedText('bold');
 });
 
 document.getElementById('italicButton').addEventListener('click', function() {
-    applyTextFormat('italic');
+    formatSelectedText('italic');
 });
 
 document.getElementById('underlineButton').addEventListener('click', function() {
-    applyTextFormat('underline');
+    formatSelectedText('underline');
 });
 
 document.getElementById('textSizeSelect').addEventListener('change', function() {
-    applyTextFormat('fontSize', this.selectedIndex + 1);
+    formatSelectedText('fontSize', this.selectedIndex + 1);
 });
 
-// Generate URL
+// Link creation with prompt
+document.getElementById('linkButton').addEventListener('click', function() {
+    const url = prompt('Enter the URL:', 'http://');
+    if (url) {
+        formatSelectedText('createLink', url);
+    }
+});
+
+// Handle Enter key for new line properly
+document.querySelectorAll('.editable-text').forEach(editable => {
+    editable.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            document.execCommand('insertHTML', false, '<br><br>');
+            event.preventDefault();
+        }
+    });
+});
+
 // Function to generate a shareable URL
 function generateShareableUrl() {
-    // Collect the current state of sticky notes
     let notesData = Array.from(document.querySelectorAll('.sticky')).map(sticky => {
         const textOverlay = sticky.querySelector('.editable-text');
         return {
@@ -730,7 +750,7 @@ function generateShareableUrl() {
     };
 
     // Stringify and encode the state using btoa for base64 encoding
-    let encodedState = btoa(JSON.stringify(appState));
+    let encodedState = btoa(encodeURIComponent(JSON.stringify(appState)));
 
     // Create the shareable URL
     let shareableUrl = `${window.location.origin}${window.location.pathname}?state=${encodedState}`;
@@ -749,8 +769,10 @@ function loadStateFromUrl() {
     const encodedState = urlParams.get('state');
     if (encodedState) {
         try {
-            const savedState = JSON.parse(atob(encodedState));
+            const decodedState = decodeURIComponent(atob(encodedState));
+            const savedState = JSON.parse(decodedState);
             if (savedState) {
+                // Rest of the logic remains unchanged for restoring the state...
                 if (savedState.notes) {
                     savedState.notes.forEach(note => {
                         let board = document.getElementById('board');
@@ -826,15 +848,3 @@ document.addEventListener('DOMContentLoaded', function() {
     loadStateFromUrl();
     loadFromLocalStorage(); // Load from localStorage in case there is no URL state
 });
-
-
-// Function to apply a hyperlink to selected text
-function applyLink() {
-    const url = prompt("Enter the URL for the hyperlink:");
-    if (url) {
-        document.execCommand('createLink', false, url);
-    }
-}
-
-// Add event listener for the hyperlink button
-document.getElementById('linkButton').addEventListener('click', applyLink);
