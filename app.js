@@ -720,40 +720,40 @@ document.querySelectorAll('.editable-text').forEach(editable => {
     });
 });
 
-// Function to generate a shareable URL
+// Function to generate a shareable URL with compression
 function generateShareableUrl() {
     let notesData = Array.from(document.querySelectorAll('.sticky')).map(sticky => {
         const textOverlay = sticky.querySelector('.editable-text');
         return {
-            imageUrl: sticky.style.backgroundImage.slice(5, -2),
-            text: textOverlay.innerHTML, // Save the HTML content
-            style: { // Save styles
-                fontFamily: textOverlay.style.fontFamily || '',
-                fontSize: textOverlay.style.fontSize || '',
-                fontWeight: textOverlay.style.fontWeight || '',
-                fontStyle: textOverlay.style.fontStyle || '',
-                textDecoration: textOverlay.style.textDecoration || ''
+            i: sticky.style.backgroundImage.slice(5, -2), // imageUrl
+            t: textOverlay.innerHTML, // text
+            s: { // style
+                f: textOverlay.style.fontFamily || '', // fontFamily
+                z: textOverlay.style.fontSize || '',   // fontSize
+                w: textOverlay.style.fontWeight || '', // fontWeight
+                y: textOverlay.style.fontStyle || '',  // fontStyle
+                d: textOverlay.style.textDecoration || '' // textDecoration
             },
-            dateFrom: sticky.dataset.dateFrom || '',
-            dateTo: sticky.dataset.dateTo || '',
-            tags: sticky.dataset.tags || '',
-            position: {
-                cellIndex: Array.from(sticky.parentElement.parentElement.children).indexOf(sticky.parentElement),
+            dF: sticky.dataset.dateFrom || '', // dateFrom
+            dT: sticky.dataset.dateTo || '',   // dateTo
+            g: sticky.dataset.tags || '',      // tags
+            p: { // position
+                cI: Array.from(sticky.parentElement.parentElement.children).indexOf(sticky.parentElement),
             }
         };
     });
 
     let appState = {
-        notes: notesData,
-        selectedImage: currentNoteImage,
-        gridVisibility: bordersVisible,
+        n: notesData,
+        sI: currentNoteImage,
+        gV: bordersVisible,
     };
 
-    // Stringify and encode the state using btoa for base64 encoding
-    let encodedState = btoa(encodeURIComponent(JSON.stringify(appState)));
+    // Compress and encode the state
+    let compressedState = LZString.compressToEncodedURIComponent(JSON.stringify(appState));
 
     // Create the shareable URL
-    let shareableUrl = `${window.location.origin}${window.location.pathname}?state=${encodedState}`;
+    let shareableUrl = `${window.location.origin}${window.location.pathname}?state=${compressedState}`;
 
     // Copy the shareable URL to clipboard and alert
     navigator.clipboard.writeText(shareableUrl).then(() => {
@@ -763,37 +763,36 @@ function generateShareableUrl() {
     });
 }
 
-// Function to load the state from a URL parameter
+// Function to load the state from a URL parameter with decompression
 function loadStateFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
     const encodedState = urlParams.get('state');
     if (encodedState) {
         try {
-            const decodedState = decodeURIComponent(atob(encodedState));
+            const decodedState = LZString.decompressFromEncodedURIComponent(encodedState);
             const savedState = JSON.parse(decodedState);
             if (savedState) {
-                // Rest of the logic remains unchanged for restoring the state...
-                if (savedState.notes) {
-                    savedState.notes.forEach(note => {
+                if (savedState.n) {
+                    savedState.n.forEach(note => {
                         let board = document.getElementById('board');
-                        let cell = board.querySelector(`.grid-cell:nth-child(${note.position.cellIndex + 1})`);
+                        let cell = board.querySelector(`.grid-cell:nth-child(${note.p.cI + 1})`);
                         if (cell) {
-                            let sticky = createSticky(note.imageUrl, cell);
+                            let sticky = createSticky(note.i, cell);
                             const textOverlay = sticky.querySelector('.editable-text');
-                            textOverlay.innerHTML = note.text; // Restore the HTML content
+                            textOverlay.innerHTML = note.t; // Restore the HTML content
 
                             // Apply saved styles if textOverlay is not null
                             if (textOverlay) {
-                                textOverlay.style.fontFamily = note.style.fontFamily || '';
-                                textOverlay.style.fontSize = note.style.fontSize || '';
-                                textOverlay.style.fontWeight = note.style.fontWeight || '';
-                                textOverlay.style.fontStyle = note.style.fontStyle || '';
-                                textOverlay.style.textDecoration = note.style.textDecoration || '';
+                                textOverlay.style.fontFamily = note.s.f || '';
+                                textOverlay.style.fontSize = note.s.z || '';
+                                textOverlay.style.fontWeight = note.s.w || '';
+                                textOverlay.style.fontStyle = note.s.y || '';
+                                textOverlay.style.textDecoration = note.s.d || '';
                             }
 
-                            sticky.dataset.dateFrom = note.dateFrom || '';
-                            sticky.dataset.dateTo = note.dateTo || '';
-                            sticky.dataset.tags = note.tags || '';
+                            sticky.dataset.dateFrom = note.dF || '';
+                            sticky.dataset.dateTo = note.dT || '';
+                            sticky.dataset.tags = note.g || '';
 
                             // Handle checkbox and date inputs if they exist
                             const settingsPopup = sticky.querySelector('.settings-popup');
@@ -803,33 +802,33 @@ function loadStateFromUrl() {
                                 const toDateInput = settingsPopup.querySelector('.date-input:last-of-type');
 
                                 if (dateCheckbox) {
-                                    dateCheckbox.checked = !!(note.dateFrom && note.dateTo);
+                                    dateCheckbox.checked = !!(note.dF && note.dT);
                                 }
                                 if (fromDateInput) {
                                     fromDateInput.disabled = !dateCheckbox.checked;
-                                    fromDateInput.value = note.dateFrom || '';
+                                    fromDateInput.value = note.dF || '';
                                 }
                                 if (toDateInput) {
                                     toDateInput.disabled = !dateCheckbox.checked;
-                                    toDateInput.value = note.dateTo || '';
+                                    toDateInput.value = note.dT || '';
                                 }
 
                                 // Update the date display immediately after loading
-                                updateDateDisplay(sticky, note.dateFrom, note.dateTo, dateCheckbox.checked);
+                                updateDateDisplay(sticky, note.dF, note.dT, dateCheckbox.checked);
                             }
                         }
                     });
                 }
 
-                if (savedState.selectedImage) {
-                    currentNoteImage = savedState.selectedImage;
+                if (savedState.sI) {
+                    currentNoteImage = savedState.sI;
                     const noteButton = document.getElementById('noteButton');
                     if (noteButton) {
                         noteButton.style.backgroundImage = `url(${currentNoteImage})`;
                     }
                 }
 
-                bordersVisible = savedState.gridVisibility;
+                bordersVisible = savedState.gV;
                 document.querySelectorAll('.grid-cell').forEach(cell => {
                     cell.style.border = bordersVisible ? '1px dashed #d6d6d6' : 'none';
                 });
