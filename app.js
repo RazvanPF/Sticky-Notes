@@ -512,8 +512,8 @@ function filterStickyNotes() {
     const tags = document.getElementById('tagInput').value.split(',').map(tag => tag.trim().toLowerCase());
 
     document.querySelectorAll('.sticky').forEach(sticky => {
-        const textarea = sticky.querySelector('textarea');
-        const textContent = textarea ? textarea.value.toLowerCase() : '';
+        const textOverlay = sticky.querySelector('.editable-text');
+        const textContent = textOverlay ? textOverlay.textContent.toLowerCase() : '';
         const stickyFromDate = sticky.dataset.dateFrom || '';
         const stickyToDate = sticky.dataset.dateTo || '';
         const stickyTags = sticky.dataset.tags ? sticky.dataset.tags.split(',').map(tag => tag.trim().toLowerCase()) : [];
