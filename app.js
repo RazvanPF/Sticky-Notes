@@ -291,6 +291,10 @@ function createSticky(imageUrl, cell) {
 function saveToLocalStorage() {
     let notesData = Array.from(document.querySelectorAll('.sticky')).map(sticky => {
         const textOverlay = sticky.querySelector('.editable-text');
+        const settingsPopup = sticky.querySelector('.settings-popup');
+        const tagCheckbox = settingsPopup.querySelector('.toggle[type="checkbox"]:last-of-type'); // Ensure correct tag checkbox
+        const tagInput = settingsPopup.querySelector('.tag-input');
+
         return {
             i: sticky.style.backgroundImage.slice(5, -2), // imageUrl
             t: textOverlay.innerHTML, // text content
@@ -303,7 +307,8 @@ function saveToLocalStorage() {
             },
             dF: sticky.dataset.dateFrom || '',
             dT: sticky.dataset.dateTo || '',
-            g: sticky.dataset.tags || '',
+            g: tagInput.value || '', // Save tag regardless of checkbox state
+            tC: tagCheckbox.checked, // Save the tag checkbox state
             p: {
                 cI: Array.from(sticky.parentElement.parentElement.children).indexOf(sticky.parentElement),
             }
@@ -330,20 +335,6 @@ function loadFromLocalStorage() {
 }
 
 
-// Make sure this runs when the document is ready
-document.addEventListener('DOMContentLoaded', loadFromLocalStorage);
-
-// Helper function to manage date display based on saved data
-function updateDateDisplay(sticky, dateFrom, dateTo, isChecked) {
-    let dateDisplay = sticky.querySelector('.date-display');
-    if (isChecked && dateFrom && dateTo) {
-        dateDisplay.textContent = `${dateFrom} - ${dateTo}`;
-        dateDisplay.style.display = 'block';
-    } else {
-        dateDisplay.style.display = 'none';
-    }
-}
-
 function showClearConfirmation() {
     document.getElementById('clearConfirmation').classList.remove('hidden');
 }
@@ -355,7 +346,7 @@ function hideClearConfirmation() {
 function clearLocalStorage() {
     localStorage.removeItem('stickyNotesApp');
     document.querySelectorAll('.sticky').forEach(sticky => sticky.remove());
-    showNotification('Save data cleared');
+    showNotification('Save data cleared successfuly!', "green");
     hideClearConfirmation();
 }
 
@@ -583,14 +574,14 @@ function resetFilters() {
     });
 }
 
-function showNotification(message) {
+function showNotification(message, color = 'green') {
     const notification = document.createElement('div');
     notification.textContent = message;
     notification.style.position = 'fixed';
     notification.style.bottom = '20px';
     notification.style.left = '50%';
     notification.style.transform = 'translateX(-50%)';
-    notification.style.backgroundColor = 'green';
+    notification.style.backgroundColor = color;
     notification.style.color = 'white';
     notification.style.paddingLeft = '50px';
     notification.style.paddingRight = '50px';
@@ -642,12 +633,9 @@ document.getElementById('textSizeSelect').addEventListener('change', function() 
     formatSelectedText('fontSize', this.selectedIndex + 1);
 });
 
-// Link creation with prompt
+// Link prompt
 document.getElementById('linkButton').addEventListener('click', function() {
-    const url = prompt('Enter the URL:', 'http://');
-    if (url) {
-        formatSelectedText('createLink', url);
-    }
+    openCustomUrlInput(); // Open the custom URL input instead of the prompt
 });
 
 // Handle Enter key for new line properly
@@ -697,9 +685,10 @@ function generateShareableUrl() {
 
     // Copy the shareable URL to clipboard
     navigator.clipboard.writeText(shareableUrl).then(() => {
-        alert("Shareable URL has been copied to clipboard!");
+        showNotification("[BETA] Share link copied to clipboard!", "blue");
     }).catch(err => {
         console.error("Failed to copy URL: ", err);
+        showNotification('Failed to copy URL!', 'red');
     });
 }
 
@@ -750,10 +739,13 @@ function populateBoard(savedState) {
                 // Handle checkbox and date inputs if they exist
                 const settingsPopup = sticky.querySelector('.settings-popup');
                 if (settingsPopup) {
-                    const dateCheckbox = settingsPopup.querySelector('.toggle');
+                    const dateCheckbox = settingsPopup.querySelector('.toggle[type="checkbox"]:first-of-type');
+                    const tagCheckbox = settingsPopup.querySelector('.toggle[type="checkbox"]:last-of-type'); // Ensure correct tag checkbox
                     const fromDateInput = settingsPopup.querySelector('.date-input:first-of-type');
                     const toDateInput = settingsPopup.querySelector('.date-input:last-of-type');
+                    const tagInput = settingsPopup.querySelector('.tag-input');
 
+                    // Set the date checkbox
                     if (dateCheckbox) {
                         dateCheckbox.checked = !!(note.dF && note.dT);
                     }
@@ -768,6 +760,15 @@ function populateBoard(savedState) {
 
                     // Update the date display immediately after loading
                     updateDateDisplay(sticky, note.dF, note.dT, dateCheckbox.checked);
+
+                    // Set the tag checkbox and input
+                    if (tagCheckbox) {
+                        tagCheckbox.checked = !!note.g; // Check if there's a tag
+                    }
+                    if (tagInput) {
+                        tagInput.disabled = !tagCheckbox.checked;
+                        tagInput.value = note.g || '';
+                    }
                 }
             }
         });
@@ -787,6 +788,21 @@ function populateBoard(savedState) {
     });
 }
 
+// Make sure this runs when the document is ready
+document.addEventListener('DOMContentLoaded', loadFromLocalStorage);
+
+// Helper function to manage date display based on saved data
+function updateDateDisplay(sticky, dateFrom, dateTo, isChecked) {
+    let dateDisplay = sticky.querySelector('.date-display');
+    if (isChecked && dateFrom && dateTo) {
+        dateDisplay.textContent = `${dateFrom} - ${dateTo}`;
+        dateDisplay.style.display = 'block';
+    } else {
+        dateDisplay.style.display = 'none';
+    }
+}
+
+
 // Add event listener for the static share button in your HTML
 document.getElementById('shareButton').addEventListener('click', generateShareableUrl);
 
@@ -795,3 +811,103 @@ document.addEventListener('DOMContentLoaded', function() {
     loadStateFromUrl();
     loadFromLocalStorage(); // Load from localStorage in case there is no URL state
 });
+
+// CUSTOM URL PROMPT
+
+let savedSelection; // Global variable to store the text selection
+
+// Function to save the current text selection
+function saveSelection() {
+    if (window.getSelection) {
+        savedSelection = window.getSelection().getRangeAt(0);
+    } else if (document.selection && document.selection.createRange) { // For IE
+        savedSelection = document.selection.createRange();
+    }
+}
+
+// Function to restore the saved text selection
+function restoreSelection() {
+    if (savedSelection) {
+        if (window.getSelection) {
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(savedSelection);
+        } else if (document.selection && savedSelection.select) { // For IE
+            savedSelection.select();
+        }
+    }
+}
+
+// Open the custom URL input
+function openCustomUrlInput() {
+    if (window.getSelection().toString().trim() === '') {
+        showNotification('Please select any text before adding a hyperlink.', 'red');
+        return;
+    }
+    saveSelection();  // Save the current selection before opening the popup
+
+    var selectedText = window.getSelection().toString(); // Capture the text of the current selection
+
+    // Position the popup
+    var linkEditorPopup = document.getElementById('linkEditorPopup');
+    linkEditorPopup.style.display = 'block';
+    var toolbarRect = document.getElementById('textFormatToolbar').getBoundingClientRect();
+    linkEditorPopup.style.top = `${toolbarRect.bottom + window.scrollY}px`;
+    linkEditorPopup.style.left = `${toolbarRect.left + window.scrollX}px`;
+
+    // Set values in the popup
+    document.getElementById('displayText').value = selectedText;
+    var parentLink = getParentLinkElement();
+    document.getElementById('urlInputField').value = parentLink ? parentLink.href : '';
+}
+
+// Function to find the parent <a> element of the selection, if any
+function getParentLinkElement() {
+    var selection = window.getSelection();
+    if (selection.rangeCount === 0) return null;
+    var range = selection.getRangeAt(0).startContainer;
+    return range.nodeType === 3 ? range.parentNode.closest('a') : range.closest('a');
+}
+
+// Function to remove link from selected text
+function removeLinkFromSelection() {
+    var selection = window.getSelection();
+    if (!selection.rangeCount) return;
+
+    var range = selection.getRangeAt(0);
+    var containerElement = range.commonAncestorContainer;
+
+    // Navigate up to find the 'a' element if the selection is inside it
+    while (containerElement.nodeType !== 1 || containerElement.tagName !== 'A') {
+        containerElement = containerElement.parentNode;
+        if (!containerElement) return; // Break if no 'a' element is found
+    }
+
+    if (containerElement.tagName === 'A') {
+        var docFragment = document.createDocumentFragment();
+        while (containerElement.firstChild) {
+            docFragment.appendChild(containerElement.firstChild);
+        }
+        containerElement.parentNode.replaceChild(docFragment, containerElement);
+        selection.removeAllRanges();
+    }
+}
+
+// Apply the custom link to the selected text or remove it if URL is empty
+function applyCustomLink() {
+    restoreSelection();
+    const url = document.getElementById('urlInputField').value.trim();
+    const displayText = document.getElementById('displayText').value;
+
+    if (url) {
+        formatSelectedText('createLink', url);
+    } else {
+        removeLinkFromSelection();
+    }
+    closeCustomUrlInput(); // Close the input box after applying or removing the link
+}
+
+// Close the custom URL input
+function closeCustomUrlInput() {
+    document.getElementById('linkEditorPopup').style.display = 'none';
+}

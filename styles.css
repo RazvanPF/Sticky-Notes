@@ -54,6 +54,11 @@ body, html {
     height: 60px;
     margin: 5px;
     cursor: pointer;
+    transform: 0.2s;
+}
+
+.noteIcon:hover{
+    transform: scale(1.1);
 }
 
 #board {
@@ -100,6 +105,11 @@ textarea {
     background-size: 50px 50px; /* Set icon size */
     background-repeat: no-repeat; /* Prevent icon repeat */
     background-position: center; /* Center the icon */
+    transform: 0.2s;
+}
+
+.button#noteButton:hover {
+    transform: scale(1.1);
 }
 
 .button#helpButton {
@@ -107,45 +117,77 @@ textarea {
     background-repeat: no-repeat; /* Prevent icon repeat */
     background-position: center; /* Center the icon */
     margin-bottom: 50px;
+    transform: 0.2s;
 }
-
+.button#helpButton:hover {
+    transform: scale(1.1);
+}
 
 .button#textFormatButton {
     background-size: 40px 40px; /* Set icon size */
     background-repeat: no-repeat; /* Prevent icon repeat */
     background-position: center; /* Center the icon */
+    transform: 0.2s;
+}
+
+.button#textFormatButton:hover {
+    transform: scale(1.1);
 }
 
 .button#shareButton {
     background-size: 40px 40px; /* Set icon size */
     background-repeat: no-repeat; /* Prevent icon repeat */
     background-position: center; /* Center the icon */
+    transform: 0.2s;
 }
 
+.button#shareButton:hover {
+    transform: scale(1.1);
+}
 
 .button#removeButton {
     background-size: 30px 30px; /* Set icon size */
     background-repeat: no-repeat; /* Prevent icon repeat */
     background-position: center; /* Center the icon */
     border-color: red;
+    transform: 0.2s;
+}
+
+.button#removeButton:hover {
+    transform: scale(1.2);
 }
 
 .button#saveButton {
     background-size: 40px 40px; /* Set icon size */
     background-repeat: no-repeat; /* Prevent icon repeat */
     background-position: center; /* Center the icon */
+    transform: 0.2s;
+}
+
+.button#saveButton:hover {
+    transform: scale(1.2);
 }
 
 .button#clearStorageButton {
     background-size: 45px 45px; /* Set icon size */
     background-repeat: no-repeat; /* Prevent icon repeat */
     background-position: center; /* Center the icon */
+    transform: 0.2s;
+}
+
+.button#clearStorageButton:hover {
+    transform: scale(1.2);
 }
 
 .button#toggleBorderButton {
     background-size: 30px 30px;
     background-repeat: no-repeat;
     background-position: center; 
+    transform: 0.2s;
+}
+
+.button#toggleBorderButton:hover {
+    transform: scale(1.1);
 }
 
 .button#addNoteButton {
@@ -156,6 +198,11 @@ textarea {
     background-repeat: no-repeat;
     background-position: center; 
     margin-top: 10px;
+    transform: 0.2s;
+}
+
+.button#addNoteButton:hover {
+    transform: scale(1.1);
 }
 
 .grid-cell {
@@ -264,6 +311,11 @@ textarea {
     border-radius: 5px;
     color: blue;
     cursor: pointer;
+    transform: 0.2s;
+}
+
+.close-popup-button:hover {
+    transform: scale(1.05);
 }
 
 .icon {
@@ -287,6 +339,11 @@ textarea {
     background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/gearicon.png');
     background-size: cover;
     z-index: 10;
+    transform: 0.2s;
+}
+
+.sticky .gear-icon:hover{
+    transform: scale(1.05);
 }
 
 .settings-popup {
@@ -334,6 +391,11 @@ textarea {
     border: none;
     cursor: pointer;
     margin-top: 10px;
+    transform: 0.2s;
+}
+
+.save-button:hover{
+    transform: scale(1.02);
 }
 
 .settings-popup.active {
@@ -377,6 +439,10 @@ textarea {
     color: white;
     border: none;
     cursor: pointer;
+    transform: 0.2s;
+}
+#filterBar button:hover {
+    transform: scale(1.1);
 }
 
 /*.notification {
@@ -525,4 +591,68 @@ input[type="date"] {
 
 .editable-text a {
     cursor: pointer; /* Change the cursor to a pointer when hovering over links */
+}
+
+#customUrlInput {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#urlInputField {
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#linkEditorPopup {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 10px;
+    border-radius: 5px;
+    width: auto;
+    max-width: 300px; /* Adjust width as necessary */
+}
+
+#linkEditorPopup input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 8px 10px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#linkEditorPopup button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    margin: 5px 2px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block; /* Change from default block to inline-block */
+}
+
+#linkEditorPopup button:hover {
+    background-color: #45a049;
+}
+
+.label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+    display: block;
 }
