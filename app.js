@@ -101,6 +101,7 @@ function createSticky(imageUrl, cell) {
     textOverlay.contentEditable = 'true';
     textOverlay.className = 'editable-text';
     textOverlay.style.position = 'absolute';
+    textOverlay.spellcheck = false;
     textOverlay.style.width = '100%';
     textOverlay.style.height = '100%';
     textOverlay.style.top = '50%';
