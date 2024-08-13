@@ -18,7 +18,7 @@
         <button id="clearStorageButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/clearicn.png');"></button>
         <button id="shareButton" class="button" style="background-image: url('https://raw.githubusercontent.com/razvanpf/Images/main/shareicon.png');"></button>
 
-        <!-- "?" Button for Instructions -->
+        <!-- Button for Instructions -->
         <button id="helpButton" class="button help-button">?</button>
         
     </div>
@@ -29,6 +29,8 @@
         <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote4.png" class="noteIcon" alt="Green Note">
         <img src="https://raw.githubusercontent.com/razvanpf/Images/main/stickynote5.png" class="noteIcon" alt="Pink Note">
     </div>
+
+        <!-- Filter Bar -->
     <div id="filterBar" style="padding: 10px; margin-left: 180px; /* Adjust as per sidebar width */">
         <input type="text" id="keywordInput" placeholder="Search Keywords" style="margin-right: 10px;">
         <label for="fromDateInput">From:</label>
@@ -80,6 +82,7 @@
         </div>
     </div>
 
+    <!-- Text Format Toolbar -->
     <div id="textFormatToolbar" class="text-toolbar hidden">
         <select id="fontFamilySelect">
             <option value="Arial">Arial</option>
@@ -110,6 +113,7 @@
     </div>
 </div>
 
+    <!-- Link Editor for text Hyperlink-->
 <div id="linkEditorPopup" style="display: none; position: absolute; z-index: 1000; background: white; padding: 10px; border: 1px solid #ccc;">
     <label for="displayText">Text:</label>
     <input type="text" id="displayText" style="width: 100%;">

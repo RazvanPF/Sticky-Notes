@@ -17,7 +17,7 @@ Array.from(document.getElementsByClassName('noteIcon')).forEach(icon => {
     icon.setAttribute('draggable', true);
     icon.addEventListener('dragstart', function(event) {
         const imageSrc = icon.src;
-        event.dataTransfer.setData("text/plain", imageSrc); // Ensure data is set here
+        event.dataTransfer.setData("text/plain", imageSrc); // Data set here
         event.dataTransfer.effectAllowed = "copy";
         createGhostIcon(imageSrc);
         document.body.appendChild(ghostIcon);
@@ -106,15 +106,15 @@ function createSticky(imageUrl, cell) {
     textOverlay.style.height = '100%';
     textOverlay.style.top = '50%';
     textOverlay.style.left = '50%';
-    textOverlay.style.transform = 'translate(-50%, -50%)'; // Center the textarea
+    textOverlay.style.transform = 'translate(-50%, -50%)'; 
     textOverlay.style.zIndex = '1';
-    textOverlay.style.display = 'block'; // Changed to block to handle text better
+    textOverlay.style.display = 'block'; 
     textOverlay.style.padding = '5px';
     textOverlay.style.overflow = 'auto';
-    textOverlay.style.background = 'transparent'; // Ensure it blends with textarea
-    textOverlay.style.whiteSpace = 'pre-wrap'; // Preserve whitespace and line breaks
-    textOverlay.style.wordWrap = 'break-word'; // Break words if necessary
-    textOverlay.style.outline = 'none'; // Remove focus outline
+    textOverlay.style.background = 'transparent'; 
+    textOverlay.style.whiteSpace = 'pre-wrap'; 
+    textOverlay.style.wordWrap = 'break-word'; 
+    textOverlay.style.outline = 'none'; 
     sticky.appendChild(textOverlay);
 
     adjustTextareaSize(imageUrl, textOverlay);
@@ -293,7 +293,7 @@ function saveToLocalStorage() {
     let notesData = Array.from(document.querySelectorAll('.sticky')).map(sticky => {
         const textOverlay = sticky.querySelector('.editable-text');
         const settingsPopup = sticky.querySelector('.settings-popup');
-        const tagCheckbox = settingsPopup.querySelector('.toggle[type="checkbox"]:last-of-type'); // Ensure correct tag checkbox
+        const tagCheckbox = settingsPopup.querySelector('.toggle[type="checkbox"]:last-of-type'); 
         const tagInput = settingsPopup.querySelector('.tag-input');
 
         return {
@@ -351,7 +351,7 @@ function clearLocalStorage() {
     hideClearConfirmation();
 }
 
-// Add event listener for clearing the local storage
+// Event listener for clearing the local storage
 document.getElementById('clearStorageButton').addEventListener('click', showClearConfirmation);
 document.getElementById('confirmClearYes').addEventListener('click', clearLocalStorage);
 document.getElementById('confirmClearNo').addEventListener('click', hideClearConfirmation);
@@ -450,6 +450,7 @@ document.getElementById('closePopupButton').addEventListener('click', function()
 
 document.getElementById('saveButton').addEventListener('click', saveToLocalStorage);
 
+// Adjust text area size based on sticky note type
 function adjustTextareaSize(imageUrl, textOverlay) {
     switch (imageUrl) {
         case 'https://raw.githubusercontent.com/razvanpf/Images/main/stickynote.png':
@@ -477,14 +478,14 @@ function adjustTextareaSize(imageUrl, textOverlay) {
             textOverlay.style.height = '75%';
     }
 }
-
+// Highlight cell on hover - CURRENTLY NOT WORKING
 function highlightCell(cell) {
     const hasSticky = cell.querySelector('.sticky');
     if (!hasSticky && !cell.classList.contains('highlight')) {
         cell.classList.add('highlight');
     }
 }
-
+// Remove highlight cell on hover out - CURRENTLY NOT WORKING
 function removeHighlight(cell) {
     if (cell.classList.contains('highlight')) {
         cell.classList.remove('highlight');
@@ -501,7 +502,8 @@ document.getElementById('closePopupButton').addEventListener('click', function()
     document.getElementById('instructionPopup').classList.add('hidden');
 });
 
-//Filter Bar
+//////////////FILTERS//////////////
+
 //Filter Sticky Notes
 function filterStickyNotes() {
     const keyword = document.getElementById('keywordInput').value.toLowerCase();
@@ -522,7 +524,7 @@ function filterStickyNotes() {
         // Date range matching logic
         let dateMatch = true;
         if (fromDate || toDate) {
-            dateMatch = false; // Assume no match unless found
+            dateMatch = false; 
 
             if (fromDate && !toDate) {
                 // Match any note with a from date matching the filter
@@ -548,13 +550,13 @@ function filterStickyNotes() {
     });
 }
 
-// Function to reset sticky position if needed
+// Reset sticky position if needed
 function resetStickyPosition(sticky) {
     sticky.style.top = '';
     sticky.style.left = '';
 }
 
-// Function to reset filters
+// Reset filters
 function resetFilters() {
     // Clear input fields, ensure elements exist
     const keywordInput = document.getElementById('keywordInput');
@@ -574,7 +576,7 @@ function resetFilters() {
         resetStickyPosition(sticky);
     });
 }
-
+// Notification with different colors
 function showNotification(message, color = 'green') {
     const notification = document.createElement('div');
     notification.textContent = message;
@@ -613,7 +615,7 @@ function formatSelectedText(command, value = null) {
     }
 }
 
-// Add event listeners for toolbar actions
+// Event listeners for toolbar actions
 document.getElementById('fontFamilySelect').addEventListener('change', function() {
     formatSelectedText('fontName', this.value);
 });
@@ -693,7 +695,7 @@ function generateShareableUrl() {
     });
 }
 
-// Function to load the state from a URL parameter with decompression
+// Load the state from a URL parameter with decompression
 function loadStateFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
     const encodedState = urlParams.get('state');
@@ -741,7 +743,7 @@ function populateBoard(savedState) {
                 const settingsPopup = sticky.querySelector('.settings-popup');
                 if (settingsPopup) {
                     const dateCheckbox = settingsPopup.querySelector('.toggle[type="checkbox"]:first-of-type');
-                    const tagCheckbox = settingsPopup.querySelector('.toggle[type="checkbox"]:last-of-type'); // Ensure correct tag checkbox
+                    const tagCheckbox = settingsPopup.querySelector('.toggle[type="checkbox"]:last-of-type'); 
                     const fromDateInput = settingsPopup.querySelector('.date-input:first-of-type');
                     const toDateInput = settingsPopup.querySelector('.date-input:last-of-type');
                     const tagInput = settingsPopup.querySelector('.tag-input');
@@ -804,7 +806,7 @@ function updateDateDisplay(sticky, dateFrom, dateTo, isChecked) {
 }
 
 
-// Add event listener for the static share button in your HTML
+// Event listener for the static share button in your HTML
 document.getElementById('shareButton').addEventListener('click', generateShareableUrl);
 
 // Load state from URL when the document is ready
@@ -817,7 +819,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 let savedSelection; // Global variable to store the text selection
 
-// Function to save the current text selection
+// Save the current text selection
 function saveSelection() {
     if (window.getSelection) {
         savedSelection = window.getSelection().getRangeAt(0);
@@ -826,7 +828,7 @@ function saveSelection() {
     }
 }
 
-// Function to restore the saved text selection
+// Restore the saved text selection
 function restoreSelection() {
     if (savedSelection) {
         if (window.getSelection) {
@@ -862,7 +864,7 @@ function openCustomUrlInput() {
     document.getElementById('urlInputField').value = parentLink ? parentLink.href : '';
 }
 
-// Function to find the parent <a> element of the selection, if any
+// Find the parent <a> element of the selection, if any
 function getParentLinkElement() {
     var selection = window.getSelection();
     if (selection.rangeCount === 0) return null;
@@ -870,7 +872,7 @@ function getParentLinkElement() {
     return range.nodeType === 3 ? range.parentNode.closest('a') : range.closest('a');
 }
 
-// Function to remove link from selected text
+// Remove link from selected text
 function removeLinkFromSelection() {
     var selection = window.getSelection();
     if (!selection.rangeCount) return;

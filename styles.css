@@ -10,17 +10,17 @@ body, html {
     position: fixed;
     top: 0;
     left: 0;
-    width: 200px; /* Adjust based on your sidebar width */
+    width: 200px;
     height: 100vh;
-    background-color: #f0f0f0; /* Example background color */
-    z-index: 10; /* Keeps sidebar above other content */
+    background-color: #f0f0f0; 
+    z-index: 10;
 }
 
 #sidebar, #noteSelector {
     position: fixed;
     top: 0;
     bottom: 0;
-    width: 70px; /* Fixed width for sidebars */
+    width: 70px; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -29,8 +29,8 @@ body, html {
 }
 
 #noteSelector {
-    left: 80px; /* Positioning second sidebar to the right of the first */
-    display: none; /* Initially hidden */
+    left: 80px; 
+    display: none; 
     border-left: solid 1px black;
 }
 
@@ -46,7 +46,7 @@ body, html {
 }
 
 .button.active {
-    border: 2px solid #555; /* Indicates active state */
+    border: 2px solid #555; 
 }
 
 .noteIcon {
@@ -63,31 +63,30 @@ body, html {
 
 #board {
     position: absolute;
-    left: 170px; /* Adjusted to start right after the sidebar */
-    top: 60px; /* Height of the filter bar plus some padding */
+    left: 170px; 
+    top: 60px;
     right: 0;
     bottom: 0;
     display: grid;
-    grid-template-columns: repeat(4, 392px); /* Each column is 387px wide */
-    grid-auto-rows: 392px; /* Each row is 392px tall */
+    grid-template-columns: repeat(4, 392px);
+    grid-auto-rows: 392px;
     gap: 10px;
     padding: 10px;
-    overflow-y: auto; /* Enables vertical scrolling */
-    align-content: start; /* Aligns grid content to the top */
+    overflow-y: auto; 
+    align-content: start; 
 }
 
 .sticky {
     position: absolute;
     top: 0;
     left: 0;
-    width: 348px; /* 90% of the grid column width */
-    height: 353px; /* 90% of the grid row height */
+    width: 348px;
+    height: 353px; 
     background-size: cover;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: auto;
-    /* box-shadow: 0 4px 6px rgba(0,0,0,0.3); */
 }
 
 textarea {
@@ -102,9 +101,9 @@ textarea {
 }
 
 .button#noteButton {
-    background-size: 50px 50px; /* Set icon size */
-    background-repeat: no-repeat; /* Prevent icon repeat */
-    background-position: center; /* Center the icon */
+    background-size: 50px 50px; 
+    background-repeat: no-repeat; 
+    background-position: center; 
     transform: 0.2s;
 }
 
@@ -113,9 +112,9 @@ textarea {
 }
 
 .button#helpButton {
-    background-size: 50px 50px; /* Set icon size */
-    background-repeat: no-repeat; /* Prevent icon repeat */
-    background-position: center; /* Center the icon */
+    background-size: 50px 50px; 
+    background-repeat: no-repeat; 
+    background-position: center; 
     margin-bottom: 50px;
     transform: 0.2s;
 }
@@ -124,9 +123,9 @@ textarea {
 }
 
 .button#textFormatButton {
-    background-size: 40px 40px; /* Set icon size */
-    background-repeat: no-repeat; /* Prevent icon repeat */
-    background-position: center; /* Center the icon */
+    background-size: 40px 40px; 
+    background-repeat: no-repeat; 
+    background-position: center;
     transform: 0.2s;
 }
 
@@ -135,9 +134,9 @@ textarea {
 }
 
 .button#shareButton {
-    background-size: 40px 40px; /* Set icon size */
-    background-repeat: no-repeat; /* Prevent icon repeat */
-    background-position: center; /* Center the icon */
+    background-size: 40px 40px; 
+    background-repeat: no-repeat;
+    background-position: center; 
     transform: 0.2s;
 }
 
@@ -146,9 +145,9 @@ textarea {
 }
 
 .button#removeButton {
-    background-size: 30px 30px; /* Set icon size */
-    background-repeat: no-repeat; /* Prevent icon repeat */
-    background-position: center; /* Center the icon */
+    background-size: 30px 30px; 
+    background-repeat: no-repeat; 
+    background-position: center; 
     border-color: red;
     transform: 0.2s;
 }
@@ -158,9 +157,9 @@ textarea {
 }
 
 .button#saveButton {
-    background-size: 40px 40px; /* Set icon size */
-    background-repeat: no-repeat; /* Prevent icon repeat */
-    background-position: center; /* Center the icon */
+    background-size: 40px 40px; 
+    background-repeat: no-repeat; 
+    background-position: center; 
     transform: 0.2s;
 }
 
@@ -169,9 +168,9 @@ textarea {
 }
 
 .button#clearStorageButton {
-    background-size: 45px 45px; /* Set icon size */
-    background-repeat: no-repeat; /* Prevent icon repeat */
-    background-position: center; /* Center the icon */
+    background-size: 45px 45px; 
+    background-repeat: no-repeat; 
+    background-position: center; 
     transform: 0.2s;
 }
 
@@ -213,41 +212,41 @@ textarea {
 }
 
 .grid-cell.highlight {
-    background-color: rgba(173, 216, 230, 0.5); /* Light blue background for highlighting */
+    background-color: rgba(173, 216, 230, 0.5); 
 }
 
 /* Styles the scrollbar track for textareas and divs in .sticky */
 .sticky textarea::-webkit-scrollbar-track,
 .sticky div::-webkit-scrollbar-track {
-    background-color: #f0f0f0; /* Light grey track */
+    background-color: #f0f0f0;
 }
 
 /* Styles the scrollbar thumb for textareas and divs in .sticky */
 .sticky textarea::-webkit-scrollbar-thumb,
 .sticky div::-webkit-scrollbar-thumb {
-    background-color: #888; /* Darker grey thumb */
-    border-radius: 10px; /* Optionally round the corners */
+    background-color: #888; 
+    border-radius: 10px; 
 }
 
 /* Styles the scrollbar itself for textareas and divs in .sticky */
 .sticky textarea::-webkit-scrollbar,
 .sticky div::-webkit-scrollbar {
-    width: 8px; /* Thin scrollbar width */
-    background-color: #f0f0f0; /* Light grey scrollbar background */
+    width: 8px; 
+    background-color: #f0f0f0; 
     border-radius: 10px;
 }
 
 /* Additional styling for the scrollbar corner for textareas and divs in .sticky */
 .sticky textarea::-webkit-scrollbar-corner,
 .sticky div::-webkit-scrollbar-corner {
-    background-color: #f0f0f0; /* Background color of the corner */
+    background-color: #f0f0f0; 
     border-radius: 10px;
 }
 
 .help-button {
     width: 30px;
     height: 30px;
-    border-radius: 30px; /* Make it circular */
+    border-radius: 30px; 
     background-color: #e0e0e0;
     font-size: 20px;
     font-weight: bold;
@@ -255,7 +254,7 @@ textarea {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: auto; /* Push it to the bottom of the sidebar */
+    margin-top: auto; 
     margin-bottom: 10px;
 }
 
@@ -265,7 +264,7 @@ textarea {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    background-color: rgba(0, 0, 0, 0.5); 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -273,13 +272,13 @@ textarea {
 }
 
 .popup.hidden {
-    display: none; /* Hide the popup by default */
+    display: none;
 }
 
 .popup-content {
     background-color: white;
     padding: 20px;
-    max-width: 765px; /* Max width for the popup content */
+    max-width: 765px; 
     width: 100%;
     max-height: 700px;
     overflow-y: auto;
@@ -304,7 +303,7 @@ textarea {
 
 .close-popup-button {
     display: block;
-    margin: 20px auto 0; /* Center the button horizontally */
+    margin: 20px auto 0;
     padding: 10px 20px;
     background-color: transparent;
     border: 1px solid blue;
@@ -356,12 +355,12 @@ textarea {
     z-index: 10;
     top: 40px;
     right: 10px;
-    justify-content: space-between; /* Add space between label and input */
-    margin-bottom: 5px; /* Margin below each label */
+    justify-content: space-between;
+    margin-bottom: 5px;
 }
 
 .settings-popup input[type="date"] {
-    margin-left: 5px; /* Space between label and input */
+    margin-left: 5px; 
 }
 
 .settings-popup label {
@@ -414,13 +413,13 @@ textarea {
 
 #filterBar {
     position: absolute;
-    left: 1px; /* Align with the left edge of the board */
+    left: 1px; 
     max-width: 1575px ;
     width: 100%;
     top: 5px;
     padding: 10px;
     background-color: #f0f0f0;
-    z-index: 100; /* Ensures it stays on top */
+    z-index: 100; 
     display: flex;
     align-items: center;
     border-bottom: 1px solid #ccc;
@@ -429,7 +428,7 @@ textarea {
 #filterBar input[type="text"], #filterBar input[type="date"] {
     padding: 8px;
     margin-right: 10px;
-    width: 200px; /* Adjust based on preference */
+    width: 200px; 
 }
 
 #filterBar button {
@@ -456,9 +455,9 @@ textarea {
     cursor: pointer;
     transition: transform 0.2s;
     margin: 5px;
-    width: 100px; /* Set a fixed width for uniform size */
-    padding: 10px 0; /* Equal vertical padding for consistent height */
-    text-align: center; /* Center-align the text */
+    width: 100px; 
+    padding: 10px 0;
+    text-align: center;
 }
 
 .confirm-button:hover {
@@ -484,7 +483,7 @@ textarea {
     justify-content: center;
     background-color: white;
     padding: 20px;
-    max-width: 500px; /* Max width for the popup content */
+    max-width: 500px;
     width: 100%;
     max-height: 500px;
     overflow-y: auto;
@@ -495,9 +494,9 @@ textarea {
 
 .button-container {
     display: flex;
-    justify-content: center; /* Center-align the buttons horizontally */
-    gap: 10px; /* Add space between the buttons */
-    margin-top: 10px; /* Add some margin above the button container */
+    justify-content: center; 
+    gap: 10px; 
+    margin-top: 10px; 
 }
 
 .warning {
@@ -507,28 +506,28 @@ textarea {
 
 .date-display {
     position: absolute;
-    bottom: 5px; /* Adjust spacing to bottom edge */
-    left: 5px; /* Spacing from left edge */
-    right: 5px; /* Spacing from right edge */
+    bottom: 5px; 
+    left: 5px; 
+    right: 5px; 
     text-align: center;
-    color: #333; /* Text color */
-    font-size: 12px; /* Text size */
-    overflow: hidden; /* Hide overflow */
-    white-space: nowrap; /* Prevent wrapping */
-    text-overflow: ellipsis; /* Show ellipsis for overflow */
+    color: #333; 
+    font-size: 12px; 
+    overflow: hidden; 
+    white-space: nowrap; 
+    text-overflow: ellipsis; 
 }
 
 label {
-    margin-right: 5px; /* Adjust the right margin of labels */
+    margin-right: 5px; 
 }
 
 input[type="date"] {
-    margin-left: 5px; /* Add left margin to the date inputs for extra spacing */
+    margin-left: 5px;
 }
 
 .text-toolbar {
     position: absolute;
-    top: 70px; /* Adjust this as necessary */
+    top: 70px; 
     left: 50%;
     transform: translateX(-50%);
     background-color: #f9f9f9;
@@ -562,15 +561,15 @@ input[type="date"] {
     height: 100%;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Center the textarea */
+    transform: translate(-50%, -50%); 
     z-index: 1;
-    display: block; /* Change to block to handle text better */
+    display: block; 
     padding: 5px;
     overflow: auto;
-    background: transparent; /* Ensure it blends with textarea */
-    white-space: pre-wrap; /* Preserve line breaks */
-    word-wrap: break-word; /* Handle long words */
-    outline: none; /* Remove focus outline */
+    background: transparent; 
+    white-space: pre-wrap; 
+    word-wrap: break-word;
+    outline: none; 
 }
 
 .editable-textarea {
@@ -582,15 +581,15 @@ input[type="date"] {
     background: transparent;
     outline: none;
     overflow: auto;
-    white-space: pre-wrap; /* Maintain whitespace and newlines */
+    white-space: pre-wrap;
 }
 
 .editable-textarea::selection {
-    background: rgba(0, 123, 255, 0.3); /* Highlight color for selected text */
+    background: rgba(0, 123, 255, 0.3); 
 }
 
 .editable-text a {
-    cursor: pointer; /* Change the cursor to a pointer when hovering over links */
+    cursor: pointer; 
 }
 
 #customUrlInput {
@@ -623,7 +622,7 @@ input[type="date"] {
     padding: 10px;
     border-radius: 5px;
     width: auto;
-    max-width: 300px; /* Adjust width as necessary */
+    max-width: 300px; 
 }
 
 #linkEditorPopup input[type="text"] {
@@ -643,7 +642,7 @@ input[type="date"] {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    display: inline-block; /* Change from default block to inline-block */
+    display: inline-block; 
 }
 
 #linkEditorPopup button:hover {
@@ -658,82 +657,83 @@ input[type="date"] {
 }
 
 
-/* Start of Mobile Specific Styles */
+/* HERE STARTS MOBILE SPECIFIC CSS */
 @media (max-width: 767px) {
     /* Adjust sidebar and note selector */
     #sidebar {
-        width: 70px; /* Ensure sidebar width is consistent */
+        width: 70px; 
         z-index: 11;
     }
 
     #noteSelector {
-        left: 0; /* Overlay on top of the sidebar */
-        width: 70px; /* Consistent with the sidebar */
-        display: block; /* Always show for easy access */
-        z-index: 15; /* Higher z-index to overlay content */
+        left: 0; 
+        width: 70px; 
+        display: block; 
+        z-index: 15; 
     }
 
     /* Positioning the filter bar directly below the sidebar on mobile */
     #filterBar {
         position: fixed;
         top: 2;
-        left: 70px; /* Start right after the sidebar */
+        left: 70px; 
         margin-left: 0px !important;
         right: 0;
         display: flex;
-        max-width: 320px;
-        flex-direction: column; /* Stack elements vertically */
+        max-width: 500px;
+        flex-direction: column; 
         padding: 10px;
-        box-sizing: border-box; /* Include padding in width calculations */
-        z-index: 10; /* Make sure it's above other content but below the note selector */
-        background-color: #f0f0f0; /* Match the sidebar color */
+        box-sizing: border-box; 
+        z-index: 10; 
+        background-color: #f0f0f0; 
     }
 
     #filterBar input[type="text"], 
     #filterBar input[type="date"], 
     #filterBar button {
-        width: 50%; /* Full width for each input */
-        margin-top: 5px; /* Space between filter inputs */
+        width: 50%; 
+        margin-top: 5px; 
     }
 
     /* Adjust the board layout */
     #board {
-        top: calc(180px + 110px); /* Adjust this value to where your filters end */
-        left: 70px; /* Aligned with the sidebar */
+        top: calc(180px + 110px); 
+        left: 70px; 
         right: 0;
         bottom: 0;
         display: flex;
         flex-direction: column;
         padding: 10px;
-        overflow-x: hidden; /* Ensure no horizontal scroll */
-        overflow-y: auto; /* Allow vertical scroll */
-        align-items: center; /* Center align the grid cells */
+        overflow-x: hidden; 
+        overflow-y: auto; 
+        align-items: center;
     }
 
     .grid-cell {
-        width: 300px; /* Adjust the width to fit the screen width minus the sidebar */
+        width: 300px;
+        max-width: 500px;
         min-height: 300px;
-        height: 100vh; /* Set height to 100% of the viewport height */
-        margin-bottom: 10px; /* Provide space between cells */
+        height: 100vh; 
+        margin-bottom: 10px;
         margin-left: 30px;
         margin-top: 20px;
     }
     .sticky {
-        width: 75%; /* Make sticky notes fill the cell completely */
-        height: auto; /* Auto-adjust height to content */
-        min-height: 70%; /* Ensure minimum height is 90% of the cell */
+        width: 75%; 
+        height: auto; 
+        min-height: 70%; 
         display: flex;
         flex-direction: column; /* Stack children elements vertically */
         justify-content: center;
         align-items: center;
-        padding: 20px; /* Add padding to avoid text touching the edges */
+        padding: 20px; 
     }
 
     /* Ensure text areas within sticky notes expand as needed */
     .editable-textarea, .editable-text {
-        height: auto; /* Auto-adjust height based on content */
-        min-height: 50%; /* Minimum height to cover most of the sticky note */
-        overflow-y: auto; /* Allow scrolling within the text area */
+        height: auto; 
+        min-height: 50%;
+        overflow-y: auto; 
     }
 
     .settings-popup {
