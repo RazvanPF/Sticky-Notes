@@ -656,3 +656,106 @@ input[type="date"] {
     margin-bottom: 5px;
     display: block;
 }
+
+
+/* Start of Mobile Specific Styles */
+@media (max-width: 767px) {
+    /* Adjust sidebar and note selector */
+    #sidebar {
+        width: 70px; /* Ensure sidebar width is consistent */
+        z-index: 11;
+    }
+
+    #noteSelector {
+        left: 0; /* Overlay on top of the sidebar */
+        width: 70px; /* Consistent with the sidebar */
+        display: block; /* Always show for easy access */
+        z-index: 15; /* Higher z-index to overlay content */
+    }
+
+    /* Positioning the filter bar directly below the sidebar on mobile */
+    #filterBar {
+        position: fixed;
+        top: 2;
+        left: 70px; /* Start right after the sidebar */
+        margin-left: 0px !important;
+        right: 0;
+        display: flex;
+        max-width: 320px;
+        flex-direction: column; /* Stack elements vertically */
+        padding: 10px;
+        box-sizing: border-box; /* Include padding in width calculations */
+        z-index: 10; /* Make sure it's above other content but below the note selector */
+        background-color: #f0f0f0; /* Match the sidebar color */
+    }
+
+    #filterBar input[type="text"], 
+    #filterBar input[type="date"], 
+    #filterBar button {
+        width: 50%; /* Full width for each input */
+        margin-top: 5px; /* Space between filter inputs */
+    }
+
+    /* Adjust the board layout */
+    #board {
+        top: calc(180px + 110px); /* Adjust this value to where your filters end */
+        left: 70px; /* Aligned with the sidebar */
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        overflow-x: hidden; /* Ensure no horizontal scroll */
+        overflow-y: auto; /* Allow vertical scroll */
+        align-items: center; /* Center align the grid cells */
+    }
+
+    .grid-cell {
+        width: 300px; /* Adjust the width to fit the screen width minus the sidebar */
+        min-height: 300px;
+        height: 100vh; /* Set height to 100% of the viewport height */
+        margin-bottom: 10px; /* Provide space between cells */
+        margin-left: 30px;
+        margin-top: 20px;
+    }
+    .sticky {
+        width: 75%; /* Make sticky notes fill the cell completely */
+        height: auto; /* Auto-adjust height to content */
+        min-height: 70%; /* Ensure minimum height is 90% of the cell */
+        display: flex;
+        flex-direction: column; /* Stack children elements vertically */
+        justify-content: center;
+        align-items: center;
+        padding: 20px; /* Add padding to avoid text touching the edges */
+    }
+
+    /* Ensure text areas within sticky notes expand as needed */
+    .editable-textarea, .editable-text {
+        height: auto; /* Auto-adjust height based on content */
+        min-height: 50%; /* Minimum height to cover most of the sticky note */
+        overflow-y: auto; /* Allow scrolling within the text area */
+    }
+
+    .settings-popup {
+        left: 10px;
+    }
+
+    label[for="fromDateInput"] {
+        padding-top: 5px;
+    }
+
+    label[for="toDateInput"] {
+        padding-top: 5px;
+    }
+
+    .text-toolbar {
+        position: fixed;
+        top: 0;
+        left: 50%; /* Center horizontally */
+        transform: translateX(-50%); /* Offset by half its width */
+        width: 100%; /* Optional: Make it full width if desired */
+        box-shadow: 0 4px 6px rgba(0,0,0,0.6)
+    }
+
+}
+/* End of Mobile Specific Styles */
