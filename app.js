@@ -914,5 +914,3 @@ function applyCustomLink() {
 function closeCustomUrlInput() {
     document.getElementById('linkEditorPopup').style.display = 'none';
 }
-
-//test
